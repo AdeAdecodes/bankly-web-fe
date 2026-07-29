@@ -1,0 +1,53 @@
+trigger:
+       branches:
+         include:
+           - develop
+          #  - staging
+           - main
+       paths:
+         exclude:
+         - README.md
+pool:
+  vmImage: ubuntu-22.04
+stages:
+  - stage: Build
+    displayName: "Build & Publish Artifacts"
+    # variables:
+    # - ${{ if eq(variables['Build.SourceBranchName'], 'main') }}:
+    #   - group : Bankly Web FE PROD
+    # - ${{ elseif eq(variables['Build.SourceBranchName'], 'staging') }}:
+    #   - group : Bankly Web FE Staging
+    # - ${{ else }}:
+    #   - group : Bankly Web FE PROD
+    jobs:
+        - job: Build
+          condition: and(succeeded(), in(variables['Build.SourceBranch'], 'refs/heads/develop', 'refs/heads/staging', 'refs/heads/main'))
+          steps:  
+          - task: NodeTool@0
+            inputs:
+              versionSpec: '18.x'
+            displayName: 'Install Node.js'
+          - script: |
+              npm install --legacy-peer-deps
+              npm run build
+            displayName: 'npm install and build'
+          - task: Cache@2
+            displayName: 'Cache .next/cache'
+            inputs:
+              key: next | $(Agent.OS) | yarn.lock
+              path: '$(System.DefaultWorkingDirectory)/.next/cache'
+          # - task: PublishPipelineArtifact@1
+          #   inputs:
+          #     targetPath: $(System.DefaultWorkingDirectory)/dist
+          #     artifactName: $(Build.SourceBranchName)
+          # - task: ArchiveFiles@2
+          #   displayName: 'Archive files'
+          #   inputs:
+          #     rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+          #     includeRootFolder: false
+          #     archiveType: zip
+          #     archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+          #     replaceExistingArchive: true
+
+          # - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+          #   artifact: drop

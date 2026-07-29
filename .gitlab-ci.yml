@@ -1,0 +1,34 @@
+image: docker:latest
+
+variables:
+ DOCKER_DRIVER: overlay
+
+services:
+ - docker:dind
+
+cache:
+ paths:
+  - node_modules/
+
+stages:
+ - deploy
+
+deploy_staging:
+ stage: deploy
+ environment:
+  name: staging
+  url: https://bankly.wbcstaging.com
+ only:
+  - staging
+ before_script:
+  - apk update
+  - apk upgrade
+  - 'command -v ssh-agent || ( apk add openssh-client )'
+  - eval $(ssh-agent -s)
+  - echo "${ID_RSA}" | ssh-add -
+  - mkdir -p ~/.ssh
+  - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+  - chmod +x ./.gitlab/depoy-scripts/deploy_staging.sh
+ script:
+  - scp "./docker-compose-${CI_COMMIT_REF_NAME}.yml" $SERVER_USER@$SERVER_IP:~/web
+  - ssh $SERVER_USER@$SERVER_IP DEPLOY_ENV="$CI_COMMIT_REF_NAME" 'bash -s' < ./.gitlab/depoy-scripts/deploy_staging.sh

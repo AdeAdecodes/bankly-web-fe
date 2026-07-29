@@ -1,0 +1,19 @@
+version: '3'
+services:
+  production_web:
+    image: segsoft/fluxnode:latest
+    ports:
+      - 6230:80
+    volumes:
+      - bankly_production_web:/var/www:cached
+    environment:
+      - APP_ENV=production
+      - GIT_OAUTH2_TOKEN=${GIT_OAUTH2_TOKEN}
+      - REPOSITORY_URL=dev.azure.com/BanklyNG/Bankly%202.0/_git/bankly-web-fe
+      - PORT=6230
+      - APP_NAME=bankly-web
+      - GIT_BRANCH=main
+    container_name: bankly_production_web
+
+volumes:
+  bankly_production_web:
