@@ -1,0 +1,8 @@
+node_modules
+.next
+# Stale artifact dir from when next.config.js set distDir: 'dist'.
+# Contains webpack cache packs over Vercel's 100MB per-file limit.
+dist
+out
+build
+coverage
