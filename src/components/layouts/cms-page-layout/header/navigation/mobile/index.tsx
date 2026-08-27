@@ -1,144 +1,255 @@
-import { Collapse, Drawer, IconButton } from '@mui/material';
+import {
+  Box,
+  ButtonBase,
+  Collapse,
+  Drawer,
+  IconButton,
+  Theme,
+  Typography,
+} from '@mui/material';
+import { SystemStyleObject } from '@mui/system';
 import { ChevronDown, Close } from 'mdi-material-ui';
+import { useRouter } from 'next/router';
 import React from 'react';
 import MenuIcon from '~/components/icons/menu';
-import ActionField from '~/components/impls/cms-page/elements/field/action-field';
-import MediaField from '~/components/impls/cms-page/elements/field/media-field';
-import RichTextField from '~/components/impls/cms-page/elements/field/rich-text-field';
-import Divider from '~/components/shared/divider';
-import { Column, Flexible, Row } from '~/components/shared/layout';
+import FlagChip from '~/components/shared/flag-chip';
+import { Row, RowProps } from '~/components/shared/layout';
+import Link from '~/components/shared/link';
 import getActionHref from '~/helpers/get-action-href';
-import useIsActiveUrlFn from '~/helpers/use-is-active-url-fn';
-import { NavigationItem } from '~/types';
+import { NavigationItem, SiteSetting } from '~/types';
+import Brand from '../../brand';
+import { dropdownContainsPath, navItemHref } from '..';
 
-type MobileNavigationProps = {
+type MobileNavigationProps = RowProps & {
   items: NavigationItem[];
+  settings?: SiteSetting;
 };
 
-function MobileNavigation({ items }: MobileNavigationProps) {
+/** Hamburger + right-hand drawer with accordions (casa-web `.mobilemenu`). */
+function MobileNavigation({
+  items,
+  settings,
+  ...props
+}: MobileNavigationProps) {
+  const router = useRouter();
   const [open, setOpen] = React.useState(false);
-  const isActiveUrl = useIsActiveUrlFn();
+
+  React.useEffect(() => {
+    const close = () => setOpen(false);
+    router.events.on('routeChangeStart', close);
+    return () => router.events.off('routeChangeStart', close);
+  }, [router.events]);
 
   return (
-    <React.Fragment>
-      <Flexible />
-      <IconButton onClick={() => setOpen((x) => !x)}>
-        {open ? <Close /> : <MenuIcon />}
-      </IconButton>
-      <Drawer
-        variant="persistent"
-        open={open}
-        anchor="right"
-        onClose={() => setOpen(false)}
-        PaperProps={{ sx: { width: 1, top: 56, zIndex: 0 }, elevation: 0 }}
-        sx={{ top: 56 }}
-        hideBackdrop
+    <Row {...props}>
+      <IconButton
+        aria-label="Open menu"
+        aria-expanded={open}
+        onClick={() => setOpen(true)}
+        sx={{
+          width: 46,
+          height: 46,
+          border: 1.5,
+          borderColor: 'divider',
+          borderRadius: '9px',
+          color: 'primary.dark',
+          '&:hover': { bgcolor: 'brand.cream' },
+        }}
       >
-        <Column gap={3} px={3} py={3}>
-          {items.map((item) => (
-            <RootNavigationItem
-              key={item.id}
-              item={item}
-              active={item.action && isActiveUrl(getActionHref(item.action))}
-              onAction={() => setOpen(false)}
-            />
-          ))}
-        </Column>
+        <MenuIcon sx={{ fontSize: 22 }} />
+      </IconButton>
+
+      <Drawer
+        anchor="right"
+        open={open}
+        onClose={() => setOpen(false)}
+        PaperProps={{
+          sx: {
+            width: 'min(88vw, 340px)',
+            p: '16px 18px 20px',
+            display: 'flex',
+            flexDirection: 'column',
+            boxShadow: (theme) => theme.palette.customShadows.drawer,
+          },
+        }}
+      >
+        <Row
+          crossAxisAlignment="center"
+          mainAxisAlignment="space-between"
+          gap={1.5}
+          pb={1.75}
+          mb={0.75}
+          sx={{ borderBottom: 1, borderColor: 'divider' }}
+        >
+          <Brand settings={settings} compact />
+          <IconButton
+            aria-label="Close menu"
+            onClick={() => setOpen(false)}
+            sx={{
+              width: 44,
+              height: 44,
+              border: 1.5,
+              borderColor: 'divider',
+              borderRadius: '9px',
+              color: 'primary.dark',
+            }}
+          >
+            <Close />
+          </IconButton>
+        </Row>
+
+        <Box component="nav" aria-label="Mobile">
+          {items.map((item) =>
+            item.type === 'dropdown' ? (
+              <Accordion
+                key={item.id ?? item.label}
+                item={item}
+                current={dropdownContainsPath(item, router.asPath)}
+              />
+            ) : (
+              <MobileLink key={item.id ?? item.label} item={item} />
+            )
+          )}
+        </Box>
+
+        <Row
+          mt="auto"
+          pt={2.25}
+          gap={1.125}
+          crossAxisAlignment="center"
+          sx={{ color: 'text.secondary', fontSize: 12 }}
+        >
+          <FlagChip /> Federal Republic of Nigeria
+        </Row>
       </Drawer>
-    </React.Fragment>
+    </Row>
   );
 }
 
-type RootNavigationItemProps = {
-  item: NavigationItem;
-  active?: boolean;
-  onAction: () => void;
+const rowSx: SystemStyleObject<Theme> = {
+  display: 'flex',
+  alignItems: 'center',
+  minHeight: 52,
+  px: 0.5,
+  fontSize: 15.5,
+  color: 'brand.menuInk',
+  borderBottom: 1,
+  borderColor: 'divider',
+  '&:hover': { color: 'primary.main' },
 };
 
-function RootNavigationItem({
-  item,
-  active,
-  onAction,
-}: RootNavigationItemProps) {
-  if (item.hasChildren) {
-    return <CompositeRootNavigationItem item={item} onAction={onAction} />;
+type ItemProps = { item: NavigationItem };
+
+function MobileLink({ item }: ItemProps) {
+  const href = navItemHref(item);
+
+  if (item.highlight) {
+    return (
+      <Link
+        href={href}
+        sx={
+          {
+            ...rowSx,
+            mt: 2.25,
+            bgcolor: 'primary.dark',
+            color: 'common.white',
+            justifyContent: 'center',
+            borderRadius: '10px',
+            fontWeight: 600,
+            borderBottom: 0,
+            minHeight: 50,
+            '&:hover': { bgcolor: 'primary.main', color: 'common.white' },
+          } as any
+        }
+      >
+        {item.label}
+      </Link>
+    );
   }
 
   return (
-    <ActionField
-      action={Object.assign({}, item.action, { label: item.label })}
-      color="text.primary"
-      underline="none"
-      sx={{
-        fontSize: '1.25rem',
-        color: active ? 'primary.main' : undefined,
-        '&:hover': { color: 'primary.main' },
-      }}
-      onClick={onAction}
-    />
+    <Link
+      href={href}
+      target={item.action?.newTab ? '_blank' : undefined}
+      sx={rowSx as any}
+    >
+      {item.label}
+    </Link>
   );
 }
 
-function CompositeRootNavigationItem({
-  item,
-  onAction,
-}: RootNavigationItemProps) {
-  const [open, setOpen] = React.useState(false);
+function Accordion({ item, current }: ItemProps & { current: boolean }) {
+  const [open, setOpen] = React.useState(current);
 
   return (
-    <Column>
-      <ActionField
-        action={Object.assign({}, item.action, { label: item.label })}
-        textProps={{
-          variant: 'h6',
-          fontWeight: 400,
-        }}
-        color="text.primary"
-        underline="none"
-        buttonProps={{ endIcon: <ChevronDown sx={{ ml: 'auto' }} /> }}
-        onClick={(e) => {
-          e.preventDefault();
-          setOpen((x) => !x);
-        }}
+    <Box>
+      <ButtonBase
+        onClick={() => setOpen((x) => !x)}
+        aria-expanded={open}
         sx={{
-          fontSize: '1.25rem',
-          '&:hover': { color: 'primary.main' },
+          ...rowSx,
+          width: 1,
+          justifyContent: 'space-between',
+          gap: 1.5,
+          font: 'inherit',
+          textAlign: 'left',
+          ...(current ? { color: 'primary.main', fontWeight: 700 } : {}),
         }}
-      />
+      >
+        {item.label}
+        <ChevronDown
+          sx={{
+            fontSize: 18,
+            flex: 'none',
+            transition: 'transform .18s',
+            transform: open ? 'rotate(180deg)' : 'none',
+          }}
+        />
+      </ButtonBase>
       <Collapse in={open}>
-        <Column py={2} bgcolor="white" borderRadius={1} width={600}>
-          <Column gap={4} flex={2}>
-            {item.items.map((item) => (
-              <Row
-                key={item.id}
-                component={ActionField}
-                action={item.action}
-                sx={{ '&:hover': { color: 'primary.main' } }}
-                onClick={onAction}
-                underline="none"
-                crossAxisAlignment="start"
-                gap={2}
-              >
-                <MediaField
-                  media={item.icon}
-                  width={48}
-                  fit="contain"
-                  flexShrink={0}
-                />
-                <RichTextField
-                  value={item.content as any}
-                  gap={0}
-                  mt={0.35}
-                  flex={1}
-                />
-              </Row>
-            ))}
-          </Column>
-          <Divider color="grey.200" my={2} />
-          <RichTextField value={item.supportingContent as any} gap={0} />
-        </Column>
+        <Box px={0.5} pt={0.5} pb={1.25}>
+          {(item.groups ?? []).map((group, gi) => (
+            <Box key={group.id ?? gi}>
+              {group.label && (
+                <Typography
+                  component="span"
+                  sx={{
+                    display: 'block',
+                    pt: 1.25,
+                    pb: 0.25,
+                    pl: 1.75,
+                    fontSize: 11,
+                    fontWeight: 700,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.06em',
+                    color: 'secondary.dark',
+                  }}
+                >
+                  {group.label}
+                </Typography>
+              )}
+              {group.links.map((link, li) => (
+                <Link
+                  key={link.id ?? li}
+                  href={getActionHref(link.action, '#')}
+                  target={link.action?.newTab ? '_blank' : undefined}
+                  sx={{
+                    display: 'block',
+                    py: 1.25,
+                    pl: 1.75,
+                    fontSize: 14,
+                    color: 'brand.inkSoft',
+                    '&:hover': { color: 'primary.main' },
+                  }}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </Box>
+          ))}
+        </Box>
       </Collapse>
-    </Column>
+    </Box>
   );
 }
 

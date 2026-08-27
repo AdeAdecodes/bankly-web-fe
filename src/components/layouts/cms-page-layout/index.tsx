@@ -1,20 +1,27 @@
 import { Box } from '@mui/material';
 import React from 'react';
 import Page from '~/components/shared/page';
-import { Page as CMSPageType } from '~/types';
+import { SiteGlobals } from '~/types';
 import Footer from './footer';
 import Header from './header';
+import SiteAlertBar from './site-alert-bar';
 
 type CMSPageLayoutProps = React.PropsWithChildren<{
-  layout: NonNullable<CMSPageType['layout']>;
+  globals?: SiteGlobals;
 }>;
 
-function CMSPageLayout({ layout, children }: CMSPageLayoutProps) {
+/** Site chrome driven by the Header / Footer / Site Settings globals. */
+function CMSPageLayout({ globals, children }: CMSPageLayoutProps) {
+  const settings = globals?.siteSettings;
+
   return (
-    <Page>
-      <Header header={layout.header} />
-      <Box sx={{ overflowX: 'hidden' }}>{children}</Box>
-      <Footer footer={layout.footer} />
+    <Page display="flex" flexDirection="column" minHeight="100vh">
+      <SiteAlertBar settings={settings} />
+      <Header header={globals?.header} settings={settings} />
+      <Box component="main" id="main" flex={1} sx={{ overflowX: 'hidden' }}>
+        {children}
+      </Box>
+      <Footer footer={globals?.footer} settings={settings} />
     </Page>
   );
 }

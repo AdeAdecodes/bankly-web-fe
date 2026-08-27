@@ -1,22 +1,19 @@
 import React from 'react';
-import { Column } from '~/components/shared/layout';
-import { Page } from '~/types';
-import CMSPageHero from './elements/hero';
-import CMSPageSections from './sections';
+import { Page, SiteSetting } from '~/types';
+import RenderBlocks from './render-blocks';
 import CMSPageSEO from './seo';
 
 type CMSPageProps = {
   page: Page;
+  settings?: SiteSetting;
 };
 
-function CMSPage({ page }: CMSPageProps) {
+/** A CMS page = SEO tags + its flat `layout` of blocks. */
+function CMSPage({ page, settings }: CMSPageProps) {
   return (
     <React.Fragment>
-      <CMSPageSEO page={page} />
-      <Column>
-        <CMSPageHero hero={page.hero} />
-        <CMSPageSections sections={page.sections} />
-      </Column>
+      <CMSPageSEO page={page} settings={settings} />
+      <RenderBlocks blocks={page.layout} />
     </React.Fragment>
   );
 }

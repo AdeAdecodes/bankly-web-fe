@@ -1,54 +1,34 @@
-import { Button, ButtonProps } from '@mui/material';
+import { alpha, Button, ButtonProps, Theme } from '@mui/material';
 import { ArrowRight } from 'mdi-material-ui';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { Row } from '~/components/shared/layout';
 import Link, { LinkProps } from '~/components/shared/link';
-import config from '~/config';
 import getActionHref from '~/helpers/get-action-href';
 import { Action } from '~/types';
-import AppStoreIcon from './appstore-icon';
-import PlayStoreIcon from './playstore-icon';
 
 type MuiBasedLinkProps = Extract<LinkProps, { mui: true }>;
 
 export type ActionFieldProps = Omit<MuiBasedLinkProps, 'href' | 'mui'> & {
-  action?: Action;
+  action?: Action | null;
   textProps?: Omit<MuiBasedLinkProps, 'href' | 'mui'>;
   buttonProps?: ButtonProps;
   arrow?: JSX.Element;
 };
 
+/**
+ * Renders a CMS action (link/CTA). `decoration.variant` picks text link vs
+ * filled/outlined button; `decoration.color` maps onto the theme palette
+ * (primary = green, secondary = gold, white = inverted for dark bands).
+ */
 function ActionField({ action, ...props }: ActionFieldProps) {
   if (!action) return null;
 
-  if (action.type === 'app-store') {
-    return <AppleStoreActionField />;
-  } else if (action.type === 'google-play-store') {
-    return <GooglePlayStoreActionField />;
-  } else {
-    return <NormalActionField {...props} action={action} />;
-  }
-}
-
-function AppleStoreActionField() {
-  return (
-    <Link href={config.app.appStoreUrl}>
-      <AppStoreIcon sx={{ fontSize: '3rem' }} />
-    </Link>
-  );
-}
-
-function GooglePlayStoreActionField() {
-  return (
-    <Link href={config.app.googlePlayUrl}>
-      <PlayStoreIcon sx={{ fontSize: '3rem' }} />
-    </Link>
-  );
+  return <NormalActionField {...props} action={action} />;
 }
 
 type NormalActionFieldProps = Omit<ActionFieldProps, 'action'> & {
-  action: NonNullable<ActionFieldProps['action']>;
+  action: Action;
   arrow?: JSX.Element;
 };
 
@@ -71,17 +51,24 @@ function NormalActionField({
   const maybeWhiteBg =
     decoration?.color === 'white' && decoration.variant === 'contained'
       ? {
-          bgcolor: 'white',
-          color: 'primary.main',
-          '&:hover': { bgcolor: 'rgba(255,255,255,0.9)' },
+          bgcolor: 'common.white',
+          color: 'primary.dark',
+          '&:hover': {
+            bgcolor: (theme: Theme) => alpha(theme.palette.common.white, 0.9),
+          },
         }
       : undefined;
   const maybeWhiteBorder =
     decoration?.color === 'white' && decoration.variant === 'outlined'
       ? {
-          borderColor: 'white',
-          color: 'white',
-          '&:hover': { borderColor: 'rgba(255,255,255,0.9)' },
+          borderColor: (theme: Theme) =>
+            alpha(theme.palette.common.white, 0.55),
+          color: 'common.white',
+          bgcolor: (theme: Theme) => alpha(theme.palette.brand.deepest, 0.3),
+          '&:hover': {
+            borderColor: 'common.white',
+            bgcolor: (theme: Theme) => alpha(theme.palette.common.white, 0.12),
+          },
         }
       : undefined;
 
@@ -89,6 +76,7 @@ function NormalActionField({
     <Component
       href={getActionHref(action, router.asPath)}
       target={action.newTab ? '_blank' : undefined}
+      rel={action.newTab ? 'noopener noreferrer' : undefined}
       {...resolvedButtonProps}
       {...props}
       color={

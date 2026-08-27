@@ -16,7 +16,7 @@ function ActionGroupBlock({ block }: ActionGroupBlockProps) {
       gap={2}
       actionProps={(action) => {
         return {
-          color: isActiveUrl(getActionHref(action!)) ? 'primary' : undefined,
+          color: isActiveUrl(getActionHref(action)) ? 'primary' : undefined,
           sx: {
             fontSize: 12,
           },

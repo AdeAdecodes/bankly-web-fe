@@ -54,8 +54,7 @@ function ExpandableCard({ card, expanded, onChange }: ExpandableCardProps) {
       <Box
         position="absolute"
         sx={{
-          backgroundImage:
-            'linear-gradient(180deg, rgba(4, 20, 50, 0) 0%, #041432 100%)',
+          backgroundImage: (theme) => theme.palette.gradients.cardFade,
           inset: 0,
         }}
       />

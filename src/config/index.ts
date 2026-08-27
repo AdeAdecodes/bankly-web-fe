@@ -3,27 +3,20 @@ const config = {
     url: process.env.NEXT_PUBLIC_API_URL,
   },
   cms: {
-    url: process.env.NEXT_PUBLIC_CMS_URL,
+    url: (process.env.NEXT_PUBLIC_CMS_URL || '').replace(/\/$/, ''),
   },
-  app: {
-    googlePlayUrl:
-      process.env.NEXT_PUBLIC_GOOGLE_PLAY_URL ||
-      'https://play.google.com/store/apps/details?id=com.bankly.bloomm',
-    appStoreUrl:
-      process.env.NEXT_PUBLIC_APP_STORE_URL ||
-      'https://apps.apple.com/us/app/bankly/id1582452537',
+  site: {
+    url: (process.env.NEXT_PUBLIC_SITE_URL || '').replace(/\/$/, ''),
   },
   accessTokenKey: process.env.NEXT_PUBLIC_AUTH_TOKEN_KEY || '__token__',
+  /** Fallbacks only — the live values come from the Site Settings global. */
   seo: {
-    name: 'Bankly',
-    title: 'Bankly',
-    titleTemplate: '%s | Bankly',
-    description: '',
-    url: '',
+    name: 'Nigeria High Commission, Canberra',
+    title: 'Nigeria High Commission, Canberra',
+    titleTemplate: '%s | Nigeria High Commission, Canberra',
+    description:
+      'Consular services, visas & immigration, and trade & investment for Nigerians and partners across Australia and the Oceanic States.',
     image: '',
-    socials: {
-      twitter: '',
-    },
   },
 };
 

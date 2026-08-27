@@ -1,58 +1,39 @@
 import api from '~/api';
-import { Page, PopulatableBlock } from '~/types';
+import { Page } from '~/types';
 import { querify } from '~/utils/querify';
-import populateBlogPostsBlock from '../blog/populate-blog-posts-block';
-import populateCaseStudiesBlock from '../case-studies/populate-case-studies-block';
-import populateHelpTopicsBlock from '../help-centre/populate-help-topics-block';
-import populateOpeningsBlock from '../openings/populate-openings-block';
-import populatePressPostsBlock from '../press/populate-press-posts-block';
-import populateTeamMembersBlock from '../team-members/populate-team-members-block';
-import populateTestimonialsBlock from '../testimonials/populate-testimonials-block';
+import populateBlocks from './populate-blocks';
 
-export default async function fetchPage(slugSegments?: string[]) {
-  const resolvedSlugSegments = slugSegments || [''];
-  const slug = resolvedSlugSegments.join('/');
+/** The CMS slug used for `/`. */
+export const HOME_SLUG = 'home';
+
+export function resolvePageSlug(segments?: string | string[] | null) {
+  const slug = Array.isArray(segments) ? segments.join('/') : segments || '';
+  return slug || HOME_SLUG;
+}
+
+export default async function fetchPage(
+  slugSegments?: string | string[] | null
+): Promise<Page | null> {
+  const slug = resolvePageSlug(slugSegments);
 
   try {
     const result = await api.get<{ docs: Page[] }>(
-      querify('/pages', { where: { slug: { equals: slug } } })
+      querify('/pages', {
+        where: { slug: { equals: slug } },
+        depth: 2,
+        limit: 1,
+      })
     );
-    return withPopulatedBlocks(result.data.docs[0]);
-  } catch (e) {
-    return console.log(e);
+
+    const page = result.data.docs[0];
+    if (!page) return null;
+
+    await populateBlocks(page.layout);
+
+    return page;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(`[fetchPage] failed for slug "${slug}"`, error);
+    return null;
   }
-}
-
-type PopulatableBlockType = PopulatableBlock['blockType'];
-type PopulateFn = (block: any) => Promise<void>;
-
-const populatableBlockToFnMap: Record<PopulatableBlockType, PopulateFn> = {
-  'blog-posts-block': populateBlogPostsBlock,
-  'press-posts-block': populatePressPostsBlock,
-  'help-topics-block': populateHelpTopicsBlock,
-  'openings-block': populateOpeningsBlock,
-  'team-members-block': populateTeamMembersBlock,
-  'testimonials-block': populateTestimonialsBlock,
-  'case-studies-block': populateCaseStudiesBlock,
-};
-
-async function withPopulatedBlocks(page?: Page) {
-  if (!page) return null;
-
-  for (const section of page.sections) {
-    if (!section.blocks) continue;
-
-    for (const block of section.blocks) {
-      if (!(block.blockType in populatableBlockToFnMap)) continue;
-
-      const populateFn =
-        populatableBlockToFnMap[block.blockType as PopulatableBlockType];
-
-      if (populateFn) {
-        await populateFn(block as PopulatableBlock);
-      }
-    }
-  }
-
-  return page;
 }

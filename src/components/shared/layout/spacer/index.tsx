@@ -18,11 +18,11 @@ function Spacer({ sx, sy }: SpacerProps) {
     } else if (Array.isArray(prop)) {
       return prop.map((x) => unwrap(x ?? '') as never);
     } else if (typeof prop === 'object') {
-      const keys = Object.keys(prop);
-      return keys.reduce(
+      const record = prop as Record<string, Spacing>;
+      return Object.keys(record).reduce(
         (res, key) => ({
           ...res,
-          [key]: unwrap(prop[key] ?? ''),
+          [key]: unwrap(record[key] ?? ''),
         }),
         {}
       );

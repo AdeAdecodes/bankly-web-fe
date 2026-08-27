@@ -1,132 +1,218 @@
-import { Box, Hidden, Popover } from '@mui/material';
+import { Box, Button, ButtonBase, Popover, Typography } from '@mui/material';
 import { ChevronDown } from 'mdi-material-ui';
+import { useRouter } from 'next/router';
 import React from 'react';
-import ActionField from '~/components/impls/cms-page/elements/field/action-field';
-import MediaField from '~/components/impls/cms-page/elements/field/media-field';
-import RichTextField from '~/components/impls/cms-page/elements/field/rich-text-field';
-import Divider from '~/components/shared/divider';
-import { Column, Row } from '~/components/shared/layout';
+import { Row, RowProps } from '~/components/shared/layout';
+import Link from '~/components/shared/link';
 import getActionHref from '~/helpers/get-action-href';
-import useIsActiveUrlFn from '~/helpers/use-is-active-url-fn';
-import { NavigationItem } from '~/types';
+import { NavigationGroup, NavigationItem } from '~/types';
+import {
+  dropdownContainsPath,
+  navItemActiveSx,
+  navItemHref,
+  navItemSx,
+} from '..';
 
-type DesktopNavigationProps = {
+type DesktopNavigationProps = RowProps & {
   items: NavigationItem[];
 };
 
-function DesktopNavigation({ items }: DesktopNavigationProps) {
-  const isActiveUrl = useIsActiveUrlFn();
-
+function DesktopNavigation({ items, ...props }: DesktopNavigationProps) {
   return (
-    <Hidden mdDown>
-      <Row crossAxisAlignment="center" gap={3} ml="auto">
-        {items?.map((item) => (
-          <RootNavigationItem
-            key={item.id}
-            item={item}
-            active={item.action && isActiveUrl(getActionHref(item.action))}
-          />
-        ))}
-      </Row>
-    </Hidden>
+    <Row
+      component="nav"
+      aria-label="Primary"
+      crossAxisAlignment="center"
+      gap={0.25}
+      {...props}
+    >
+      {items.map((item) =>
+        item.type === 'dropdown' ? (
+          <DropdownItem key={item.id ?? item.label} item={item} />
+        ) : (
+          <LinkItem key={item.id ?? item.label} item={item} />
+        )
+      )}
+    </Row>
   );
 }
 
-type RootNavigationItemProps = {
-  item: NavigationItem;
-  active?: boolean;
-};
+type ItemProps = { item: NavigationItem };
 
-function RootNavigationItem({ item, active }: RootNavigationItemProps) {
-  if (item.hasChildren) {
-    return <CompositeRootNavigationItem item={item} />;
+function LinkItem({ item }: ItemProps) {
+  const router = useRouter();
+  const href = navItemHref(item);
+  const active = router.asPath.split('#')[0] === href;
+
+  if (item.highlight) {
+    return (
+      <React.Fragment>
+        <Box
+          aria-hidden
+          sx={{ width: '1px', height: 22, bgcolor: 'divider', mx: 0.75 }}
+        />
+        <Button
+          href={href}
+          variant="contained"
+          disableElevation
+          sx={{
+            bgcolor: 'primary.dark',
+            fontSize: 13.5,
+            fontWeight: 500,
+            borderRadius: '8px',
+            minHeight: 0,
+            px: 2.25,
+            py: 1.375,
+            ml: 0.5,
+            lineHeight: 1,
+            '&:hover': { bgcolor: 'primary.main' },
+          }}
+        >
+          {item.label}
+        </Button>
+      </React.Fragment>
+    );
   }
 
   return (
-    <ActionField
-      action={Object.assign({}, item.action, { label: item.label })}
-      color="text.primary"
-      underline="none"
-      sx={{
-        color: active ? 'primary.main' : undefined,
-        '&:hover': { color: 'primary.main' },
-      }}
-    />
+    <Link
+      href={href}
+      target={item.action?.newTab ? '_blank' : undefined}
+      sx={{ ...navItemSx, ...(active ? navItemActiveSx : {}) } as any}
+    >
+      {item.label}
+    </Link>
   );
 }
 
-function CompositeRootNavigationItem({ item }: RootNavigationItemProps) {
-  const anchorElRef = React.useRef<HTMLElement | null>(null);
-  const [open, setOpen] = React.useState(false);
+function DropdownItem({ item }: ItemProps) {
+  const router = useRouter();
+  const [anchor, setAnchor] = React.useState<HTMLElement | null>(null);
+  const open = Boolean(anchor);
+  const current = dropdownContainsPath(item, router.asPath);
+  const close = () => setAnchor(null);
+
+  React.useEffect(() => {
+    router.events.on('routeChangeStart', close);
+    return () => router.events.off('routeChangeStart', close);
+  }, [router.events]);
 
   return (
     <React.Fragment>
-      <Box ref={anchorElRef}>
-        <ActionField
-          action={{
-            ...item.action,
-            label: item.label,
+      <ButtonBase
+        onClick={(e) => setAnchor(e.currentTarget)}
+        aria-haspopup="true"
+        aria-expanded={open}
+        sx={{
+          ...navItemSx,
+          gap: 0.625,
+          font: 'inherit',
+          ...(open || current ? navItemActiveSx : {}),
+        }}
+      >
+        {item.label}
+        <ChevronDown
+          sx={{
+            fontSize: 15,
+            transition: 'transform .18s',
+            transform: open ? 'rotate(180deg)' : 'none',
           }}
-          color="text.primary"
-          underline="none"
-          buttonProps={{ endIcon: <ChevronDown fontSize="small" /> }}
-          onClick={(e) => {
-            e.preventDefault();
-            setOpen(true);
-          }}
-          sx={{ '&:hover': { color: 'primary.main' } }}
         />
-      </Box>
+      </ButtonBase>
       <Popover
-        anchorEl={anchorElRef.current}
         open={open}
-        anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
-        anchorPosition={{ left: 0, top: 48 }}
-        onClose={() => setOpen(false)}
+        anchorEl={anchor}
+        onClose={close}
+        disableScrollLock
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'left' }}
         PaperProps={{
+          elevation: 0,
           sx: {
-            mt: 2,
-            boxShadow:
-              '0px 0px 1px rgba(12, 26, 75, 0.1), 0px 4px 20px -2px rgba(50, 50, 71, 0.08)',
+            mt: 1.25,
+            minWidth: 290,
+            border: 1,
+            borderColor: 'divider',
+            borderRadius: '12px',
+            boxShadow: (theme) => theme.palette.customShadows.menu,
+            p: 1.25,
           },
         }}
-        elevation={0}
       >
-        <Row px={3} py={4} bgcolor="white" borderRadius={1} width={600}>
-          <Column gap={4} flex={2}>
-            {item.items.map((item) => (
-              <Row
-                key={item.id}
-                component={ActionField}
-                action={item.action}
-                sx={{ '&:hover': { color: 'primary.main' } }}
-                onClick={() => setOpen(false)}
-                underline="none"
-                crossAxisAlignment="start"
-                gap={2}
-              >
-                <MediaField
-                  media={item.icon}
-                  width={48}
-                  fit="contain"
-                  flexShrink={0}
-                />
-                <RichTextField
-                  value={item.content as any}
-                  gap={0}
-                  mt={0.35}
-                  flex={1}
-                />
-              </Row>
-            ))}
-          </Column>
-          <Divider color="grey.200" vertical />
-          <Box px={3} flex={1}>
-            <RichTextField value={item.supportingContent as any} gap={0} />
-          </Box>
-        </Row>
+        <Box role="menu">
+          {(item.groups ?? []).map((group, index) => (
+            <DropdownGroup
+              key={group.id ?? index}
+              group={group}
+              first={index === 0}
+              onNavigate={close}
+            />
+          ))}
+        </Box>
       </Popover>
     </React.Fragment>
+  );
+}
+
+type DropdownGroupProps = {
+  group: NavigationGroup;
+  first: boolean;
+  onNavigate: () => void;
+};
+
+function DropdownGroup({ group, first, onNavigate }: DropdownGroupProps) {
+  return (
+    <Box
+      sx={{
+        mt: first ? 0 : 0.75,
+        pt: first ? 0 : 0.75,
+        borderTop: first ? 0 : 1,
+        borderColor: 'divider',
+      }}
+    >
+      {group.label && (
+        <Typography
+          component="span"
+          sx={{
+            display: 'block',
+            px: 1.5,
+            pt: 0.75,
+            pb: 0.25,
+            fontSize: 10.5,
+            fontWeight: 700,
+            textTransform: 'uppercase',
+            letterSpacing: '0.07em',
+            color: 'secondary.dark',
+          }}
+        >
+          {group.label}
+        </Typography>
+      )}
+      {group.links.map((link, index) => (
+        <Link
+          key={link.id ?? index}
+          role="menuitem"
+          href={getActionHref(link.action, '#')}
+          target={link.action?.newTab ? '_blank' : undefined}
+          onClick={onNavigate}
+          sx={{
+            display: 'block',
+            px: 1.5,
+            py: 1.125,
+            borderRadius: '8px',
+            fontSize: 13.5,
+            color: 'brand.menuInk',
+            lineHeight: 1.35,
+            '&:hover, &:focus-visible': {
+              bgcolor: 'brand.cream',
+              color: 'primary.main',
+            },
+          }}
+        >
+          {link.label}
+        </Link>
+      ))}
+    </Box>
   );
 }
 

@@ -1,10 +1,19 @@
 import { Box, BoxProps } from '@mui/material';
 import React from 'react';
+import { layout } from '~/theme/tokens';
 
-function ContentBox(props: BoxProps) {
+/** The casa-web `.wrap`: centred, max 1180px, 28px (20px on phones) gutters. */
+function ContentBox(props: BoxProps, ref: React.Ref<unknown>) {
   return (
-    <Box width={{ xs: 1, sm: 0.9, lg: 0.8 }} mx="auto" px={3} {...props} />
+    <Box
+      ref={ref}
+      width={1}
+      maxWidth={layout.contentMaxWidth}
+      mx="auto"
+      px={{ xs: 2.5, sm: 3.5 }}
+      {...props}
+    />
   );
 }
 
-export default ContentBox;
+export default React.forwardRef(ContentBox);

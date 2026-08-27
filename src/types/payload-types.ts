@@ -8,1469 +8,131 @@
 export interface Config {
   collections: {
     pages: Page;
-    headers: Header;
-    footers: Footer;
-    'reusable-content': ReusableContent;
+    'consular-services': ConsularService;
+    'news-articles': NewsArticle;
+    'staff-members': StaffMember;
+    media: Media;
     users: User;
     'user-roles': UserRole;
-    media: Media;
-    testimonials: Testimonial;
-    'case-studies': CaseStudy;
-    agents: Agent;
-    openings: Opening;
-    'blog-posts': BlogPost;
-    blogPostCategories: BlogPostCategory;
-    'help-topics': HelpTopic;
-    'help-articles': HelpArticle;
-    'team-members': TeamMember;
-    'press-posts': PressPost;
     forms: Form;
     'form-submissions': FormSubmission;
   };
-  globals: {};
+  globals: {
+    header: Header;
+    footer: Footer;
+    'site-settings': SiteSetting;
+  };
 }
 export interface Page {
   id: string;
-  title?: string;
-  layout?: {
-    header: string | Header;
-    footer: string | Footer;
-  };
-  hero?: {
-    disabled?: boolean;
-    block: (
-      | {
-          showBreadcrumb?: boolean;
-          title: {
-            [k: string]: unknown;
-          }[];
-          centered?: boolean;
-          action?: {
-            enabled?: boolean;
-            value?: {
-              type?:
-                | 'reference'
-                | 'custom'
-                | 'current-document'
-                | 'app-store'
-                | 'google-play-store';
-              reference?: {
-                value?: {
-                  value: string | Page;
-                  relationTo: 'pages';
-                };
-              };
-              section?: string;
-              label?: string;
-              url?: string;
-              newTab?: boolean;
-              showArrow?: boolean;
-              params?: {
-                key: string;
-                value: string;
-                id?: string;
-              }[];
-              decoration?: {
-                variant?: 'text' | 'contained' | 'outlined';
-                color?: 'inherit' | 'primary' | 'secondary' | 'white';
-              };
-            };
-          };
-          expanded?: boolean;
-          hero?: boolean;
-          id?: string;
-          blockName?: string;
-          blockType: 'title-block';
-          bannerMedia: string | Media;
-        }
-      | {
-          arrangement?: 'media-first' | 'content-first';
-          emphasis?: 'moderate' | 'media' | 'content';
-          content?: {
-            [k: string]: unknown;
-          }[];
-          showLicenceSnippet?: boolean;
-          showInvestModal?: boolean;
-          showDownTimeModal?: boolean;
-          media: {
-            ref: string | Media;
-            maxHeight?: string;
-            aspectRatio?: string;
-            autoplay?: boolean;
-          };
-          bannerMedia: string | Media;
-          mediaSticksToBottom?: boolean;
-          actions?: {
-            action?: {
-              type?:
-                | 'reference'
-                | 'custom'
-                | 'current-document'
-                | 'app-store'
-                | 'google-play-store';
-              reference?: {
-                value?: {
-                  value: string | Page;
-                  relationTo: 'pages';
-                };
-              };
-              section?: string;
-              label?: string;
-              url?: string;
-              newTab?: boolean;
-              showArrow?: boolean;
-              params?: {
-                key: string;
-                value: string;
-                id?: string;
-              }[];
-              decoration?: {
-                variant?: 'text' | 'contained' | 'outlined';
-                color?: 'inherit' | 'primary' | 'secondary' | 'white';
-              };
-            };
-            id?: string;
-          }[];
-          hero?: boolean;
-          id?: string;
-          blockName?: string;
-          blockType: 'media-content-block';
-        }
-    )[];
-    spacing?: {
-      top?: boolean;
-      bottom?: boolean;
-    };
-    background?: {
-      color?: string;
-      pattern?:
-        | 'none'
-        | 'discs'
-        | 'flat-discs'
-        | 'left-positioned-logo'
-        | 'right-positioned-logo'
-        | 'spiral'
-        | 'spiral-cluster';
-      media?: {
-        enabled?: boolean;
-        value?: string | Media;
-      };
-    };
-    overlapsHeader?: boolean;
-  };
-  sections: {
-    boxed?: boolean;
-    blocks?: (
-      | {
-          showBreadcrumb?: boolean;
-          title: {
-            [k: string]: unknown;
-          }[];
-          centered?: boolean;
-          action?: {
-            enabled?: boolean;
-            value?: {
-              type?:
-                | 'reference'
-                | 'custom'
-                | 'current-document'
-                | 'app-store'
-                | 'google-play-store';
-              reference?: {
-                value?: {
-                  value: string | Page;
-                  relationTo: 'pages';
-                };
-              };
-              section?: string;
-              label?: string;
-              url?: string;
-              newTab?: boolean;
-              showArrow?: boolean;
-              params?: {
-                key: string;
-                value: string;
-                id?: string;
-              }[];
-              decoration?: {
-                variant?: 'text' | 'contained' | 'outlined';
-                color?: 'inherit' | 'primary' | 'secondary' | 'white';
-              };
-            };
-          };
-          expanded?: boolean;
-          hero?: boolean;
-          id?: string;
-          blockName?: string;
-          blockType: 'title-block';
-        }
-      | {
-          arrangement?: 'media-first' | 'content-first';
-          emphasis?: 'moderate' | 'media' | 'content';
-          content?: {
-            [k: string]: unknown;
-          }[];
-          showLicenceSnippet?: boolean;
-          showInvestModal?: boolean;
-          showDownTimeModal?: boolean;
-          media: {
-            ref: string | Media;
-            maxHeight?: string;
-            aspectRatio?: string;
-            autoplay?: boolean;
-          };
-          bannerMedia: string | Media;
-          mediaSticksToBottom?: boolean;
-          actions?: {
-            action?: {
-              type?:
-                | 'reference'
-                | 'custom'
-                | 'current-document'
-                | 'app-store'
-                | 'google-play-store';
-              reference?: {
-                value?: {
-                  value: string | Page;
-                  relationTo: 'pages';
-                };
-              };
-              section?: string;
-              label?: string;
-              url?: string;
-              newTab?: boolean;
-              showArrow?: boolean;
-              params?: {
-                key: string;
-                value: string;
-                id?: string;
-              }[];
-              decoration?: {
-                variant?: 'text' | 'contained' | 'outlined';
-                color?: 'inherit' | 'primary' | 'secondary' | 'white';
-              };
-            };
-            id?: string;
-          }[];
-          hero?: boolean;
-          id?: string;
-          blockName?: string;
-          blockType: 'media-content-block';
-        }
-      | {
-          size?: 'default' | 'full-width';
-          media: {
-            ref: string | Media;
-            maxHeight?: string;
-            aspectRatio?: string;
-            autoplay?: boolean;
-          };
-          bannerMedia: string | Media;
-          caption?: string;
-          centered?: boolean;
-          id?: string;
-          blockName?: string;
-          blockType: 'media-block';
-        }
-      | {
-          reference: string | ReusableContent;
-          id?: string;
-          blockName?: string;
-          blockType: 'reusable-content-block';
-        }
-      | {
-          tabs?: {
-            action?: {
-              type?:
-                | 'reference'
-                | 'custom'
-                | 'current-document'
-                | 'app-store'
-                | 'google-play-store';
-              reference?: {
-                value?: {
-                  value: string | Page;
-                  relationTo: 'pages';
-                };
-              };
-              section?: string;
-              label?: string;
-              url?: string;
-              newTab?: boolean;
-              showArrow?: boolean;
-              params?: {
-                key: string;
-                value: string;
-                id?: string;
-              }[];
-              decoration?: {
-                variant?: 'text' | 'contained' | 'outlined';
-                color?: 'inherit' | 'primary' | 'secondary' | 'white';
-              };
-            };
-            id?: string;
-          }[];
-          id?: string;
-          blockName?: string;
-          blockType: 'tabs-block';
-        }
-      | {
-          type?: 'default' | 'collapsible' | 'interactive';
-          arrangement?: 'media-first' | 'content-first';
-          features?: {
-            content?: {
-              [k: string]: unknown;
-            }[];
-            numbered?: boolean;
-            icon?: {
-              ref?: string | Media;
-              maxHeight?: string;
-              aspectRatio?: string;
-              autoplay?: boolean;
-            };
-            action?: {
-              enabled?: boolean;
-              value?: {
-                type?:
-                  | 'reference'
-                  | 'custom'
-                  | 'current-document'
-                  | 'app-store'
-                  | 'google-play-store';
-                reference?: {
-                  value?: {
-                    value: string | Page;
-                    relationTo: 'pages';
-                  };
-                };
-                section?: string;
-                label?: string;
-                url?: string;
-                newTab?: boolean;
-                showArrow?: boolean;
-                params?: {
-                  key: string;
-                  value: string;
-                  id?: string;
-                }[];
-                decoration?: {
-                  variant?: 'text' | 'contained' | 'outlined';
-                  color?: 'inherit' | 'primary' | 'secondary' | 'white';
-                };
-              };
-            };
-            id?: string;
-          }[];
-          collapsibleFeatures?: {
-            title?: string;
-            content?: {
-              [k: string]: unknown;
-            }[];
-            media?: {
-              ref?: string | Media;
-              maxHeight?: string;
-              aspectRatio?: string;
-              autoplay?: boolean;
-            };
-            id?: string;
-          }[];
-          interactiveFeatures?: {
-            content?: {
-              [k: string]: unknown;
-            }[];
-            media?: {
-              ref?: string | Media;
-              maxHeight?: string;
-              aspectRatio?: string;
-              autoplay?: boolean;
-            };
-            id?: string;
-          }[];
-          title?: {
-            [k: string]: unknown;
-          }[];
-          media?: {
-            ref?: string | Media;
-            maxHeight?: string;
-            aspectRatio?: string;
-            autoplay?: boolean;
-          };
-          mediaSticksToBottom?: boolean;
-          grid?: boolean;
-          actions?: {
-            action?: {
-              type?:
-                | 'reference'
-                | 'custom'
-                | 'current-document'
-                | 'app-store'
-                | 'google-play-store';
-              reference?: {
-                value?: {
-                  value: string | Page;
-                  relationTo: 'pages';
-                };
-              };
-              section?: string;
-              label?: string;
-              url?: string;
-              newTab?: boolean;
-              showArrow?: boolean;
-              params?: {
-                key: string;
-                value: string;
-                id?: string;
-              }[];
-              decoration?: {
-                variant?: 'text' | 'contained' | 'outlined';
-                color?: 'inherit' | 'primary' | 'secondary' | 'white';
-              };
-            };
-            id?: string;
-          }[];
-          id?: string;
-          blockName?: string;
-          blockType: 'features-block';
-        }
-      | {
-          type: 'media' | 'agent';
-          showArrows?: boolean;
-          medias: {
-            media?: {
-              ref?: string | Media;
-              maxHeight?: string;
-              aspectRatio?: string;
-              autoplay?: boolean;
-            };
-            label?: {
-              [k: string]: unknown;
-            }[];
-            id?: string;
-          }[];
-          agents: string[] | Agent[];
-          id?: string;
-          blockName?: string;
-          blockType: 'slider-block';
-        }
-      | {
-          items?: {
-            icon?: {
-              ref?: string | Media;
-              maxHeight?: string;
-              aspectRatio?: string;
-              autoplay?: boolean;
-            };
-            content?: {
-              [k: string]: unknown;
-            }[];
-            centered?: boolean;
-            action?: {
-              enabled?: boolean;
-              value?: {
-                type?:
-                  | 'reference'
-                  | 'custom'
-                  | 'current-document'
-                  | 'app-store'
-                  | 'google-play-store';
-                reference?: {
-                  value?: {
-                    value: string | Page;
-                    relationTo: 'pages';
-                  };
-                };
-                section?: string;
-                url?: string;
-                newTab?: boolean;
-                showArrow?: boolean;
-                params?: {
-                  key: string;
-                  value: string;
-                  id?: string;
-                }[];
-                decoration?: {
-                  variant?: 'text' | 'contained' | 'outlined';
-                  color?: 'inherit' | 'primary' | 'secondary' | 'white';
-                };
-              };
-            };
-            id?: string;
-          }[];
-          columns?: string;
-          mediaAspectRatio?: string;
-          id?: string;
-          blockName?: string;
-          blockType: 'item-grid-block';
-        }
-      | {
-          emphasis?: 'moderate' | 'content1' | 'content2';
-          content1?: {
-            [k: string]: unknown;
-          }[];
-          content2?: {
-            [k: string]: unknown;
-          }[];
-          actions?: {
-            action?: {
-              type?:
-                | 'reference'
-                | 'custom'
-                | 'current-document'
-                | 'app-store'
-                | 'google-play-store';
-              reference?: {
-                value?: {
-                  value: string | Page;
-                  relationTo: 'pages';
-                };
-              };
-              section?: string;
-              label?: string;
-              url?: string;
-              newTab?: boolean;
-              showArrow?: boolean;
-              params?: {
-                key: string;
-                value: string;
-                id?: string;
-              }[];
-              decoration?: {
-                variant?: 'text' | 'contained' | 'outlined';
-                color?: 'inherit' | 'primary' | 'secondary' | 'white';
-              };
-            };
-            id?: string;
-          }[];
-          id?: string;
-          blockName?: string;
-          blockType: 'content-content-block';
-        }
-      | {
-          conditions?: {
-            key: string;
-            value: string;
-            id?: string;
-          }[];
-          child: (
-            | {
-                showBreadcrumb?: boolean;
-                title: {
-                  [k: string]: unknown;
-                }[];
-                centered?: boolean;
-                action?: {
-                  enabled?: boolean;
-                  value?: {
-                    type?:
-                      | 'reference'
-                      | 'custom'
-                      | 'current-document'
-                      | 'app-store'
-                      | 'google-play-store';
-                    reference?: {
-                      value?: {
-                        value: string | Page;
-                        relationTo: 'pages';
-                      };
-                    };
-                    section?: string;
-                    label?: string;
-                    url?: string;
-                    newTab?: boolean;
-                    showArrow?: boolean;
-                    params?: {
-                      key: string;
-                      value: string;
-                      id?: string;
-                    }[];
-                    decoration?: {
-                      variant?: 'text' | 'contained' | 'outlined';
-                      color?: 'inherit' | 'primary' | 'secondary' | 'white';
-                    };
-                  };
-                };
-                expanded?: boolean;
-                hero?: boolean;
-                id?: string;
-                blockName?: string;
-                blockType: 'title-block';
-              }
-            | {
-                type?: 'default' | 'collapsible' | 'interactive';
-                arrangement?: 'media-first' | 'content-first';
-                features?: {
-                  content?: {
-                    [k: string]: unknown;
-                  }[];
-                  numbered?: boolean;
-                  icon?: {
-                    ref?: string | Media;
-                    maxHeight?: string;
-                    aspectRatio?: string;
-                    autoplay?: boolean;
-                  };
-                  action?: {
-                    enabled?: boolean;
-                    value?: {
-                      type?:
-                        | 'reference'
-                        | 'custom'
-                        | 'current-document'
-                        | 'app-store'
-                        | 'google-play-store';
-                      reference?: {
-                        value?: {
-                          value: string | Page;
-                          relationTo: 'pages';
-                        };
-                      };
-                      section?: string;
-                      label?: string;
-                      url?: string;
-                      newTab?: boolean;
-                      showArrow?: boolean;
-                      params?: {
-                        key: string;
-                        value: string;
-                        id?: string;
-                      }[];
-                      decoration?: {
-                        variant?: 'text' | 'contained' | 'outlined';
-                        color?: 'inherit' | 'primary' | 'secondary' | 'white';
-                      };
-                    };
-                  };
-                  id?: string;
-                }[];
-                collapsibleFeatures?: {
-                  title?: string;
-                  content?: {
-                    [k: string]: unknown;
-                  }[];
-                  media?: {
-                    ref?: string | Media;
-                    maxHeight?: string;
-                    aspectRatio?: string;
-                    autoplay?: boolean;
-                  };
-                  id?: string;
-                }[];
-                interactiveFeatures?: {
-                  content?: {
-                    [k: string]: unknown;
-                  }[];
-                  media?: {
-                    ref?: string | Media;
-                    maxHeight?: string;
-                    aspectRatio?: string;
-                    autoplay?: boolean;
-                  };
-                  id?: string;
-                }[];
-                title?: {
-                  [k: string]: unknown;
-                }[];
-                media?: {
-                  ref?: string | Media;
-                  maxHeight?: string;
-                  aspectRatio?: string;
-                  autoplay?: boolean;
-                };
-                mediaSticksToBottom?: boolean;
-                grid?: boolean;
-                actions?: {
-                  action?: {
-                    type?:
-                      | 'reference'
-                      | 'custom'
-                      | 'current-document'
-                      | 'app-store'
-                      | 'google-play-store';
-                    reference?: {
-                      value?: {
-                        value: string | Page;
-                        relationTo: 'pages';
-                      };
-                    };
-                    section?: string;
-                    label?: string;
-                    url?: string;
-                    newTab?: boolean;
-                    showArrow?: boolean;
-                    params?: {
-                      key: string;
-                      value: string;
-                      id?: string;
-                    }[];
-                    decoration?: {
-                      variant?: 'text' | 'contained' | 'outlined';
-                      color?: 'inherit' | 'primary' | 'secondary' | 'white';
-                    };
-                  };
-                  id?: string;
-                }[];
-                id?: string;
-                blockName?: string;
-                blockType: 'features-block';
-              }
-            | {
-                size?: 'default' | 'full-width';
-                media: {
-                  ref: string | Media;
-                  maxHeight?: string;
-                  aspectRatio?: string;
-                  autoplay?: boolean;
-                };
-                bannerMedia: string | Media;
-                caption?: string;
-                centered?: boolean;
-                id?: string;
-                blockName?: string;
-                blockType: 'media-block';
-              }
-            | {
-                arrangement?: 'media-first' | 'content-first';
-                emphasis?: 'moderate' | 'media' | 'content';
-                content?: {
-                  [k: string]: unknown;
-                }[];
-                showLicenceSnippet?: boolean;
-                media: {
-                  ref: string | Media;
-                  maxHeight?: string;
-                  aspectRatio?: string;
-                  autoplay?: boolean;
-                };
-                bannerMedia: string | Media;
-                mediaSticksToBottom?: boolean;
-                actions?: {
-                  action?: {
-                    type?:
-                      | 'reference'
-                      | 'custom'
-                      | 'current-document'
-                      | 'app-store'
-                      | 'google-play-store';
-                    reference?: {
-                      value?: {
-                        value: string | Page;
-                        relationTo: 'pages';
-                      };
-                    };
-                    section?: string;
-                    label?: string;
-                    url?: string;
-                    newTab?: boolean;
-                    showArrow?: boolean;
-                    params?: {
-                      key: string;
-                      value: string;
-                      id?: string;
-                    }[];
-                    decoration?: {
-                      variant?: 'text' | 'contained' | 'outlined';
-                      color?: 'inherit' | 'primary' | 'secondary' | 'white';
-                    };
-                  };
-                  id?: string;
-                }[];
-                hero?: boolean;
-                id?: string;
-                blockName?: string;
-                blockType: 'media-content-block';
-              }
-            | {
-                items?: {
-                  icon?: {
-                    ref?: string | Media;
-                    maxHeight?: string;
-                    aspectRatio?: string;
-                    autoplay?: boolean;
-                  };
-                  content?: {
-                    [k: string]: unknown;
-                  }[];
-                  centered?: boolean;
-                  action?: {
-                    enabled?: boolean;
-                    value?: {
-                      type?:
-                        | 'reference'
-                        | 'custom'
-                        | 'current-document'
-                        | 'app-store'
-                        | 'google-play-store';
-                      reference?: {
-                        value?: {
-                          value: string | Page;
-                          relationTo: 'pages';
-                        };
-                      };
-                      section?: string;
-                      url?: string;
-                      newTab?: boolean;
-                      showArrow?: boolean;
-                      params?: {
-                        key: string;
-                        value: string;
-                        id?: string;
-                      }[];
-                      decoration?: {
-                        variant?: 'text' | 'contained' | 'outlined';
-                        color?: 'inherit' | 'primary' | 'secondary' | 'white';
-                      };
-                    };
-                  };
-                  id?: string;
-                }[];
-                columns?: string;
-                mediaAspectRatio?: string;
-                id?: string;
-                blockName?: string;
-                blockType: 'item-grid-block';
-              }
-            | {
-                reference: string | ReusableContent;
-                id?: string;
-                blockName?: string;
-                blockType: 'reusable-content-block';
-              }
-            | {
-                tabs?: {
-                  action?: {
-                    type?:
-                      | 'reference'
-                      | 'custom'
-                      | 'current-document'
-                      | 'app-store'
-                      | 'google-play-store';
-                    reference?: {
-                      value?: {
-                        value: string | Page;
-                        relationTo: 'pages';
-                      };
-                    };
-                    section?: string;
-                    label?: string;
-                    url?: string;
-                    newTab?: boolean;
-                    showArrow?: boolean;
-                    params?: {
-                      key: string;
-                      value: string;
-                      id?: string;
-                    }[];
-                    decoration?: {
-                      variant?: 'text' | 'contained' | 'outlined';
-                      color?: 'inherit' | 'primary' | 'secondary' | 'white';
-                    };
-                  };
-                  id?: string;
-                }[];
-                id?: string;
-                blockName?: string;
-                blockType: 'tabs-block';
-              }
-          )[];
-          id?: string;
-          blockName?: string;
-          blockType: 'conditional-block';
-        }
-      | {
-          content?: {
-            [k: string]: unknown;
-          }[];
-          id?: string;
-          blockName?: string;
-          blockType: 'content-block';
-        }
-      | {
-          info?: {
-            title?: {
-              [k: string]: unknown;
-            }[];
-            items?: {
-              icon?: {
-                ref?: string | Media;
-                maxHeight?: string;
-                aspectRatio?: string;
-                autoplay?: boolean;
-              };
-              content?: {
-                [k: string]: unknown;
-              }[];
-              id?: string;
-            }[];
-            background?: {
-              color?: string;
-              pattern?:
-                | 'none'
-                | 'discs'
-                | 'flat-discs'
-                | 'left-positioned-logo'
-                | 'right-positioned-logo'
-                | 'spiral'
-                | 'spiral-cluster';
-              media?: {
-                enabled?: boolean;
-                value?: string | Media;
-              };
-            };
-          };
-          form?: {
-            heading?: {
-              [k: string]: unknown;
-            }[];
-            ref: string | Form;
-          };
-          id?: string;
-          blockName?: string;
-          blockType: 'form-with-info-block';
-        }
-      | {
-          cards: {
-            title?: string;
-            content?: {
-              [k: string]: unknown;
-            }[];
-            media?: {
-              ref?: string | Media;
-              maxHeight?: string;
-              aspectRatio?: string;
-              autoplay?: boolean;
-            };
-            id?: string;
-          }[];
-          id?: string;
-          blockName?: string;
-          blockType: 'expandable-cards-block';
-        }
-      | {
-          compact?: boolean;
-          columns: {
-            sizeRatio: string;
-            entries?: (
-              | {
-                  sizeRatio: string;
-                  medias: {
-                    gridMedia?: {
-                      sizeRatio: string;
-                      media?: string | Media;
-                    };
-                    id?: string;
-                  }[];
-                  id?: string;
-                  blockName?: string;
-                  blockType: 'row';
-                }
-              | {
-                  gridMedia?: {
-                    sizeRatio: string;
-                    media?: string | Media;
-                  };
-                  id?: string;
-                  blockName?: string;
-                  blockType: 'media';
-                }
-            )[];
-            id?: string;
-          }[];
-          id?: string;
-          blockName?: string;
-          blockType: 'media-grid-block';
-        }
-      | {
-          medias?: {
-            media?: {
-              ref?: string | Media;
-              maxHeight?: string;
-              aspectRatio?: string;
-              autoplay?: boolean;
-            };
-            id?: string;
-          }[];
-          gap?: string;
-          id?: string;
-          blockName?: string;
-          blockType: 'media-set-block';
-        }
-      | {
-          actions?: {
-            action?: {
-              type?:
-                | 'reference'
-                | 'custom'
-                | 'current-document'
-                | 'app-store'
-                | 'google-play-store';
-              reference?: {
-                value?: {
-                  value: string | Page;
-                  relationTo: 'pages';
-                };
-              };
-              section?: string;
-              label?: string;
-              url?: string;
-              newTab?: boolean;
-              showArrow?: boolean;
-              params?: {
-                key: string;
-                value: string;
-                id?: string;
-              }[];
-              decoration?: {
-                variant?: 'text' | 'contained' | 'outlined';
-                color?: 'inherit' | 'primary' | 'secondary' | 'white';
-              };
-            };
-            id?: string;
-          }[];
-          id?: string;
-          blockName?: string;
-          blockType: 'action-group-block';
-        }
-      | {
-          populatedData?: {};
-          populatable?: boolean;
-          id?: string;
-          blockName?: string;
-          blockType: 'testimonials-block';
-        }
-      | {
-          type: 'coin-chronicles' | 'bankly-bytes';
-          fixed?: boolean;
-          postCount?: string;
-          columns?: string;
-          showCategoriesFilterBox?: boolean;
-          populatedData?: {};
-          populatable?: boolean;
-          id?: string;
-          blockName?: string;
-          blockType: 'blog-posts-block';
-        }
-      | {
-          populatedData?: {};
-          populatable?: boolean;
-          id?: string;
-          blockName?: string;
-          blockType: 'openings-block';
-        }
-      | {
-          title?: {
-            [k: string]: unknown;
-          }[];
-          assets?: {
-            asset: string | Media;
-            name?: string;
-            boxed?: boolean;
-            id?: string;
-          }[];
-          columns?: string;
-          mediaAspectRatio?: string;
-          hideDownloadButton?: boolean;
-          id?: string;
-          blockName?: string;
-          blockType: 'downloadable-assets-block';
-        }
-      | {
-          cards?: {
-            media?: {
-              ref?: string | Media;
-              maxHeight?: string;
-              aspectRatio?: string;
-              autoplay?: boolean;
-            };
-            label?: string;
-            color?: string;
-            action?: {
-              type?:
-                | 'reference'
-                | 'custom'
-                | 'current-document'
-                | 'app-store'
-                | 'google-play-store';
-              reference?: {
-                value?: {
-                  value: string | Page;
-                  relationTo: 'pages';
-                };
-              };
-              section?: string;
-              label?: string;
-              url?: string;
-              newTab?: boolean;
-              showArrow?: boolean;
-              params?: {
-                key: string;
-                value: string;
-                id?: string;
-              }[];
-              decoration?: {
-                variant?: 'text' | 'contained' | 'outlined';
-                color?: 'inherit' | 'primary' | 'secondary' | 'white';
-              };
-            };
-            id?: string;
-          }[];
-          id?: string;
-          blockName?: string;
-          blockType: 'media-kit-cards-block';
-        }
-      | {
-          latest?: boolean;
-          configuration?: {
-            title?: string;
-            action?: {
-              type?:
-                | 'reference'
-                | 'custom'
-                | 'current-document'
-                | 'app-store'
-                | 'google-play-store';
-              reference?: {
-                value?: {
-                  value: string | Page;
-                  relationTo: 'pages';
-                };
-              };
-              section?: string;
-              label?: string;
-              url?: string;
-              newTab?: boolean;
-              showArrow?: boolean;
-              params?: {
-                key: string;
-                value: string;
-                id?: string;
-              }[];
-              decoration?: {
-                variant?: 'text' | 'contained' | 'outlined';
-                color?: 'inherit' | 'primary' | 'secondary' | 'white';
-              };
-            };
-            postCount?: string;
-          };
-          columns?: string;
-          populatedData?: {};
-          populatable?: boolean;
-          id?: string;
-          blockName?: string;
-          blockType: 'press-posts-block';
-        }
-      | {
-          columns?: string;
-          populatedData?: {};
-          populatable?: boolean;
-          id?: string;
-          blockName?: string;
-          blockType: 'team-members-block';
-        }
-      | {
-          columns?: string;
-          populatedData?: {};
-          populatable?: boolean;
-          id?: string;
-          blockName?: string;
-          blockType: 'case-studies-block';
-        }
-      | {
-          columns?: string;
-          populatedData?: {};
-          populatable?: boolean;
-          id?: string;
-          blockName?: string;
-          blockType: 'help-topics-block';
-        }
-      | {
-          placeholder?: string;
-          id?: string;
-          blockName?: string;
-          blockType: 'help-search-box-block';
-        }
-    )[];
-    spacing?: {
-      top?: boolean;
-      bottom?: boolean;
-    };
-    background?: {
-      color?: string;
-      pattern?:
-        | 'none'
-        | 'discs'
-        | 'flat-discs'
-        | 'left-positioned-logo'
-        | 'right-positioned-logo'
-        | 'spiral'
-        | 'spiral-cluster';
-      media?: {
-        enabled?: boolean;
-        value?: string | Media;
-      };
-    };
-    id?: string;
-  }[];
+  title: string;
   slug?: string;
-  meta?: {
-    title?: string;
-    description?: string;
-    image?: string | Media;
-  };
-  parent?: string | Page;
-  breadcrumbs?: {
-    doc?: string | Page;
-    url?: string;
-    label?: string;
-    id?: string;
-  }[];
-  createdAt: string;
-  updatedAt: string;
-}
-export interface Header {
-  id: string;
-  name: string;
-  definition?: {
-    logo?: string | Media;
-    items?: {
-      hasChildren?: boolean;
-      label?: string;
-      action?: {
-        type?:
-          | 'reference'
-          | 'custom'
-          | 'current-document'
-          | 'app-store'
-          | 'google-play-store';
-        reference?: {
-          value?: {
-            value: string | Page;
-            relationTo: 'pages';
-          };
-        };
-        section?: string;
-        url?: string;
-        newTab?: boolean;
-        showArrow?: boolean;
-        params?: {
-          key: string;
-          value: string;
-          id?: string;
-        }[];
-        decoration?: {
-          variant?: 'text' | 'contained' | 'outlined';
-          color?: 'inherit' | 'primary' | 'secondary' | 'white';
-        };
-      };
-      items: {
-        content?: {
-          [k: string]: unknown;
-        }[];
-        icon: {
-          ref: string | Media;
-          maxHeight?: string;
-          aspectRatio?: string;
-          autoplay?: boolean;
-        };
-        action?: {
-          type?:
-            | 'reference'
-            | 'custom'
-            | 'current-document'
-            | 'app-store'
-            | 'google-play-store';
-          reference?: {
-            value?: {
-              value: string | Page;
-              relationTo: 'pages';
-            };
-          };
-          section?: string;
-          url?: string;
-          newTab?: boolean;
-          showArrow?: boolean;
-          params?: {
-            key: string;
-            value: string;
-            id?: string;
-          }[];
-          decoration?: {
-            variant?: 'text' | 'contained' | 'outlined';
-            color?: 'inherit' | 'primary' | 'secondary' | 'white';
-          };
-        };
-        id?: string;
-      }[];
-      supportingContent?: {
-        [k: string]: unknown;
-      }[];
-      id?: string;
-    }[];
-  };
-  createdAt: string;
-  updatedAt: string;
-}
-export interface Media {
-  id: string;
-  alt: string;
-  url?: string;
-  filename?: string;
-  mimeType?: string;
-  filesize?: number;
-  width?: number;
-  height?: number;
-  createdAt: string;
-  updatedAt: string;
-}
-export interface Footer {
-  id: string;
-  name: string;
-  definition?: {
-    sections: {
-      title?: string;
-      items?: {
-        type?: 'link' | 'text';
-        text?: string;
-        action?: {
-          type?:
-            | 'reference'
-            | 'custom'
-            | 'current-document'
-            | 'app-store'
-            | 'google-play-store';
-          reference?: {
-            value?: {
-              value: string | Page;
-              relationTo: 'pages';
-            };
-          };
-          section?: string;
-          label?: string;
-          url?: string;
-          newTab?: boolean;
-          showArrow?: boolean;
-          params?: {
-            key: string;
-            value: string;
-            id?: string;
-          }[];
-          decoration?: {
-            variant?: 'text' | 'contained' | 'outlined';
-            color?: 'inherit' | 'primary' | 'secondary' | 'white';
-          };
-        };
-        id?: string;
-      }[];
-      id?: string;
-    }[];
-    additionalContent?: {
-      [k: string]: unknown;
-    }[];
-    copyright?: string;
-    legal?: {
-      terms?: {
-        type?:
-          | 'reference'
-          | 'custom'
-          | 'current-document'
-          | 'app-store'
-          | 'google-play-store';
-        reference?: {
-          value?: {
-            value: string | Page;
-            relationTo: 'pages';
-          };
-        };
-        section?: string;
-        label?: string;
-        url?: string;
-        newTab?: boolean;
-        showArrow?: boolean;
-        params?: {
-          key: string;
-          value: string;
-          id?: string;
-        }[];
-        decoration?: {
-          variant?: 'text' | 'contained' | 'outlined';
-          color?: 'inherit' | 'primary' | 'secondary' | 'white';
-        };
-      };
-      'privacy-policy'?: {
-        type?:
-          | 'reference'
-          | 'custom'
-          | 'current-document'
-          | 'app-store'
-          | 'google-play-store';
-        reference?: {
-          value?: {
-            value: string | Page;
-            relationTo: 'pages';
-          };
-        };
-        section?: string;
-        label?: string;
-        url?: string;
-        newTab?: boolean;
-        showArrow?: boolean;
-        params?: {
-          key: string;
-          value: string;
-          id?: string;
-        }[];
-        decoration?: {
-          variant?: 'text' | 'contained' | 'outlined';
-          color?: 'inherit' | 'primary' | 'secondary' | 'white';
-        };
-      };
-    };
-    background?: {
-      color?: string;
-      pattern?:
-        | 'none'
-        | 'discs'
-        | 'flat-discs'
-        | 'left-positioned-logo'
-        | 'right-positioned-logo'
-        | 'spiral'
-        | 'spiral-cluster';
-      media?: {
-        enabled?: boolean;
-        value?: string | Media;
-      };
-    };
-  };
-  createdAt: string;
-  updatedAt: string;
-}
-export interface ReusableContent {
-  id: string;
-  name: string;
-  definitions: (
+  layout: (
     | {
-        showBreadcrumb?: boolean;
-        title: {
-          [k: string]: unknown;
-        }[];
-        centered?: boolean;
-        action?: {
-          enabled?: boolean;
-          value?: {
-            type?:
-              | 'reference'
-              | 'custom'
-              | 'current-document'
-              | 'app-store'
-              | 'google-play-store';
+        eyebrow?: string;
+        heading: string;
+        headingAccent?: string;
+        subheading?: string;
+        showSearch?: boolean;
+        searchPlaceholder?: string;
+        quickLinks?: {
+          label: string;
+          action?: {
+            type?: 'reference' | 'custom' | 'current-document';
             reference?: {
-              value?: {
-                value: string | Page;
-                relationTo: 'pages';
+              value?:
+                | {
+                    value: string | Page;
+                    relationTo: 'pages';
+                  }
+                | {
+                    value: string | ConsularService;
+                    relationTo: 'consular-services';
+                  }
+                | {
+                    value: string | NewsArticle;
+                    relationTo: 'news-articles';
+                  };
+            };
+            url?: string;
+            section?: string;
+            newTab?: boolean;
+          };
+          id?: string;
+        }[];
+        slides: {
+          media: string | Media;
+          poster?: string | Media;
+          caption?: string;
+          heading?: string;
+          subheading?: string;
+          cta?: {
+            enabled?: boolean;
+            value?: {
+              type?: 'reference' | 'custom' | 'current-document';
+              reference?: {
+                value?:
+                  | {
+                      value: string | Page;
+                      relationTo: 'pages';
+                    }
+                  | {
+                      value: string | ConsularService;
+                      relationTo: 'consular-services';
+                    }
+                  | {
+                      value: string | NewsArticle;
+                      relationTo: 'news-articles';
+                    };
+              };
+              url?: string;
+              section?: string;
+              label?: string;
+              newTab?: boolean;
+              showArrow?: boolean;
+              params?: {
+                key: string;
+                value: string;
+                id?: string;
+              }[];
+              decoration?: {
+                variant?: 'text' | 'contained' | 'outlined';
+                color?: 'inherit' | 'primary' | 'secondary' | 'white';
               };
             };
+          };
+          id?: string;
+        }[];
+        autoplayInterval?: number;
+        id?: string;
+        blockName?: string;
+        blockType: 'hero-slider';
+      }
+    | {
+        eyebrow?: string;
+        heading: string;
+        lead?: string;
+        actions?: {
+          action?: {
+            type?: 'reference' | 'custom' | 'current-document';
+            reference?: {
+              value?:
+                | {
+                    value: string | Page;
+                    relationTo: 'pages';
+                  }
+                | {
+                    value: string | ConsularService;
+                    relationTo: 'consular-services';
+                  }
+                | {
+                    value: string | NewsArticle;
+                    relationTo: 'news-articles';
+                  };
+            };
+            url?: string;
             section?: string;
             label?: string;
-            url?: string;
             newTab?: boolean;
             showArrow?: boolean;
             params?: {
@@ -1483,45 +145,287 @@ export interface ReusableContent {
               color?: 'inherit' | 'primary' | 'secondary' | 'white';
             };
           };
+          id?: string;
+        }[];
+        showBreadcrumbs?: boolean;
+        section?: {
+          theme?: 'paper' | 'cream' | 'deep' | 'gold';
+          spacing?: 'default' | 'compact' | 'spacious' | 'none';
         };
-        expanded?: boolean;
-        hero?: boolean;
         id?: string;
         blockName?: string;
-        blockType: 'title-block';
+        blockType: 'page-hero';
+      }
+    | {
+        severity: 'notice' | 'warning' | 'emergency';
+        badge?: string;
+        message: string;
+        link?: {
+          enabled?: boolean;
+          value?: {
+            type?: 'reference' | 'custom' | 'current-document';
+            reference?: {
+              value?:
+                | {
+                    value: string | Page;
+                    relationTo: 'pages';
+                  }
+                | {
+                    value: string | ConsularService;
+                    relationTo: 'consular-services';
+                  }
+                | {
+                    value: string | NewsArticle;
+                    relationTo: 'news-articles';
+                  };
+            };
+            url?: string;
+            section?: string;
+            label?: string;
+            newTab?: boolean;
+          };
+        };
+        dismissible?: boolean;
+        id?: string;
+        blockName?: string;
+        blockType: 'alert-bar';
+      }
+    | {
+        eyebrow?: string;
+        heading?: string;
+        intro?: string;
+        groups: {
+          title: string;
+          icon?: string | Media;
+          populateBy: 'category' | 'selection' | 'manual';
+          category?: 'immigration' | 'consular';
+          services?: string[] | ConsularService[];
+          links?: {
+            label: string;
+            action?: {
+              type?: 'reference' | 'custom' | 'current-document';
+              reference?: {
+                value?:
+                  | {
+                      value: string | Page;
+                      relationTo: 'pages';
+                    }
+                  | {
+                      value: string | ConsularService;
+                      relationTo: 'consular-services';
+                    }
+                  | {
+                      value: string | NewsArticle;
+                      relationTo: 'news-articles';
+                    };
+              };
+              url?: string;
+              section?: string;
+              newTab?: boolean;
+            };
+            id?: string;
+          }[];
+          id?: string;
+        }[];
+        section?: {
+          theme?: 'paper' | 'cream' | 'deep' | 'gold';
+          spacing?: 'default' | 'compact' | 'spacious' | 'none';
+        };
+        populatedData?: {};
+        populatable?: boolean;
+        id?: string;
+        blockName?: string;
+        blockType: 'service-grid';
+      }
+    | {
+        staffMember?: string | StaffMember;
+        eyebrow?: string;
+        heading: string;
+        message: {
+          [k: string]: unknown;
+        }[];
+        showSignature?: boolean;
+        showSocialLinks?: boolean;
+        bioLink?: {
+          enabled?: boolean;
+          value?: {
+            type?: 'reference' | 'custom' | 'current-document';
+            reference?: {
+              value?:
+                | {
+                    value: string | Page;
+                    relationTo: 'pages';
+                  }
+                | {
+                    value: string | ConsularService;
+                    relationTo: 'consular-services';
+                  }
+                | {
+                    value: string | NewsArticle;
+                    relationTo: 'news-articles';
+                  };
+            };
+            url?: string;
+            section?: string;
+            label?: string;
+            newTab?: boolean;
+          };
+        };
+        section?: {
+          theme?: 'paper' | 'cream' | 'deep' | 'gold';
+          spacing?: 'default' | 'compact' | 'spacious' | 'none';
+        };
+        id?: string;
+        blockName?: string;
+        blockType: 'high-commissioner-section';
+      }
+    | {
+        eyebrow?: string;
+        heading?: string;
+        intro?: string;
+        variant?: 'glance' | 'impact';
+        stats: {
+          value: string;
+          label: string;
+          id?: string;
+        }[];
+        quotes?: {
+          quote: string;
+          attribution?: string;
+          id?: string;
+        }[];
+        section?: {
+          theme?: 'paper' | 'cream' | 'deep' | 'gold';
+          spacing?: 'default' | 'compact' | 'spacious' | 'none';
+        };
+        id?: string;
+        blockName?: string;
+        blockType: 'stats-section';
+      }
+    | {
+        eyebrow?: string;
+        heading?: string;
+        intro?: string;
+        videos: {
+          video: string | Media;
+          poster?: string | Media;
+          tag?: string;
+          title: string;
+          description?: string;
+          id?: string;
+        }[];
+        section?: {
+          theme?: 'paper' | 'cream' | 'deep' | 'gold';
+          spacing?: 'default' | 'compact' | 'spacious' | 'none';
+        };
+        id?: string;
+        blockName?: string;
+        blockType: 'video-gallery';
+      }
+    | {
+        eyebrow?: string;
+        heading?: string;
+        intro?: string;
+        limit: number;
+        category?:
+          | 'announcements'
+          | 'consular-updates'
+          | 'immigration'
+          | 'high-commission-activities'
+          | 'nigeria-australia-relations'
+          | 'community'
+          | 'events';
+        showViewAll?: boolean;
+        viewAllLabel?: string;
+        section?: {
+          theme?: 'paper' | 'cream' | 'deep' | 'gold';
+          spacing?: 'default' | 'compact' | 'spacious' | 'none';
+        };
+        populatedData?: {};
+        populatable?: boolean;
+        id?: string;
+        blockName?: string;
+        blockType: 'news-grid';
+      }
+    | {
+        eyebrow?: string;
+        heading?: string;
+        intro?: string;
+        highlightHighCommissioner?: boolean;
+        columns?: '2' | '3' | '4';
+        section?: {
+          theme?: 'paper' | 'cream' | 'deep' | 'gold';
+          spacing?: 'default' | 'compact' | 'spacious' | 'none';
+        };
+        populatedData?: {};
+        populatable?: boolean;
+        id?: string;
+        blockName?: string;
+        blockType: 'staff-grid';
+      }
+    | {
+        content: {
+          [k: string]: unknown;
+        }[];
+        width?: 'narrow' | 'default' | 'wide';
+        section?: {
+          theme?: 'paper' | 'cream' | 'deep' | 'gold';
+          spacing?: 'default' | 'compact' | 'spacious' | 'none';
+        };
+        id?: string;
+        blockName?: string;
+        blockType: 'rich-text';
+      }
+    | {
+        eyebrow?: string;
+        heading?: string;
+        intro?: string;
+        form: string | Form;
+        layout?: 'with-info' | 'banner';
+        info?: {
+          [k: string]: unknown;
+        }[];
+        section?: {
+          theme?: 'paper' | 'cream' | 'deep' | 'gold';
+          spacing?: 'default' | 'compact' | 'spacious' | 'none';
+        };
+        id?: string;
+        blockName?: string;
+        blockType: 'contact-form';
       }
     | {
         arrangement?: 'media-first' | 'content-first';
         emphasis?: 'moderate' | 'media' | 'content';
-        content?: {
+        content: {
           [k: string]: unknown;
         }[];
-        showLicenceSnippet?: boolean;
-        media: {
-          ref: string | Media;
+        media?: {
+          ref?: string | Media;
           maxHeight?: string;
           aspectRatio?: string;
           autoplay?: boolean;
         };
-        bannerMedia: string | Media;
-        mediaSticksToBottom?: boolean;
         actions?: {
           action?: {
-            type?:
-              | 'reference'
-              | 'custom'
-              | 'current-document'
-              | 'app-store'
-              | 'google-play-store';
+            type?: 'reference' | 'custom' | 'current-document';
             reference?: {
-              value?: {
-                value: string | Page;
-                relationTo: 'pages';
-              };
+              value?:
+                | {
+                    value: string | Page;
+                    relationTo: 'pages';
+                  }
+                | {
+                    value: string | ConsularService;
+                    relationTo: 'consular-services';
+                  }
+                | {
+                    value: string | NewsArticle;
+                    relationTo: 'news-articles';
+                  };
             };
+            url?: string;
             section?: string;
             label?: string;
-            url?: string;
             newTab?: boolean;
             showArrow?: boolean;
             params?: {
@@ -1536,10 +440,59 @@ export interface ReusableContent {
           };
           id?: string;
         }[];
-        hero?: boolean;
+        backgroundMedia?: string | Media;
+        section?: {
+          theme?: 'paper' | 'cream' | 'deep' | 'gold';
+          spacing?: 'default' | 'compact' | 'spacious' | 'none';
+        };
         id?: string;
         blockName?: string;
         blockType: 'media-content-block';
+      }
+    | {
+        eyebrow?: string;
+        heading?: string;
+        intro?: string;
+        variant?: 'cards' | 'tasks' | 'plain';
+        columns?: '2' | '3' | '4';
+        items: {
+          icon?: string | Media;
+          title: string;
+          description?: string;
+          action?: {
+            enabled?: boolean;
+            value?: {
+              type?: 'reference' | 'custom' | 'current-document';
+              reference?: {
+                value?:
+                  | {
+                      value: string | Page;
+                      relationTo: 'pages';
+                    }
+                  | {
+                      value: string | ConsularService;
+                      relationTo: 'consular-services';
+                    }
+                  | {
+                      value: string | NewsArticle;
+                      relationTo: 'news-articles';
+                    };
+              };
+              url?: string;
+              section?: string;
+              label?: string;
+              newTab?: boolean;
+            };
+          };
+          id?: string;
+        }[];
+        section?: {
+          theme?: 'paper' | 'cream' | 'deep' | 'gold';
+          spacing?: 'default' | 'compact' | 'spacious' | 'none';
+        };
+        id?: string;
+        blockName?: string;
+        blockType: 'item-grid-block';
       }
     | {
         size?: 'default' | 'full-width';
@@ -1549,225 +502,11 @@ export interface ReusableContent {
           aspectRatio?: string;
           autoplay?: boolean;
         };
-        bannerMedia: string | Media;
         caption?: string;
         centered?: boolean;
         id?: string;
         blockName?: string;
         blockType: 'media-block';
-      }
-    | {
-        items?: {
-          icon?: {
-            ref?: string | Media;
-            maxHeight?: string;
-            aspectRatio?: string;
-            autoplay?: boolean;
-          };
-          content?: {
-            [k: string]: unknown;
-          }[];
-          centered?: boolean;
-          action?: {
-            enabled?: boolean;
-            value?: {
-              type?:
-                | 'reference'
-                | 'custom'
-                | 'current-document'
-                | 'app-store'
-                | 'google-play-store';
-              reference?: {
-                value?: {
-                  value: string | Page;
-                  relationTo: 'pages';
-                };
-              };
-              section?: string;
-              url?: string;
-              newTab?: boolean;
-              showArrow?: boolean;
-              params?: {
-                key: string;
-                value: string;
-                id?: string;
-              }[];
-              decoration?: {
-                variant?: 'text' | 'contained' | 'outlined';
-                color?: 'inherit' | 'primary' | 'secondary' | 'white';
-              };
-            };
-          };
-          id?: string;
-        }[];
-        columns?: string;
-        mediaAspectRatio?: string;
-        id?: string;
-        blockName?: string;
-        blockType: 'item-grid-block';
-      }
-    | {
-        type?: 'default' | 'collapsible' | 'interactive';
-        arrangement?: 'media-first' | 'content-first';
-        features?: {
-          content?: {
-            [k: string]: unknown;
-          }[];
-          numbered?: boolean;
-          icon?: {
-            ref?: string | Media;
-            maxHeight?: string;
-            aspectRatio?: string;
-            autoplay?: boolean;
-          };
-          action?: {
-            enabled?: boolean;
-            value?: {
-              type?:
-                | 'reference'
-                | 'custom'
-                | 'current-document'
-                | 'app-store'
-                | 'google-play-store';
-              reference?: {
-                value?: {
-                  value: string | Page;
-                  relationTo: 'pages';
-                };
-              };
-              section?: string;
-              label?: string;
-              url?: string;
-              newTab?: boolean;
-              showArrow?: boolean;
-              params?: {
-                key: string;
-                value: string;
-                id?: string;
-              }[];
-              decoration?: {
-                variant?: 'text' | 'contained' | 'outlined';
-                color?: 'inherit' | 'primary' | 'secondary' | 'white';
-              };
-            };
-          };
-          id?: string;
-        }[];
-        collapsibleFeatures?: {
-          title?: string;
-          content?: {
-            [k: string]: unknown;
-          }[];
-          media?: {
-            ref?: string | Media;
-            maxHeight?: string;
-            aspectRatio?: string;
-            autoplay?: boolean;
-          };
-          id?: string;
-        }[];
-        interactiveFeatures?: {
-          content?: {
-            [k: string]: unknown;
-          }[];
-          media?: {
-            ref?: string | Media;
-            maxHeight?: string;
-            aspectRatio?: string;
-            autoplay?: boolean;
-          };
-          id?: string;
-        }[];
-        title?: {
-          [k: string]: unknown;
-        }[];
-        media?: {
-          ref?: string | Media;
-          maxHeight?: string;
-          aspectRatio?: string;
-          autoplay?: boolean;
-        };
-        mediaSticksToBottom?: boolean;
-        grid?: boolean;
-        actions?: {
-          action?: {
-            type?:
-              | 'reference'
-              | 'custom'
-              | 'current-document'
-              | 'app-store'
-              | 'google-play-store';
-            reference?: {
-              value?: {
-                value: string | Page;
-                relationTo: 'pages';
-              };
-            };
-            section?: string;
-            label?: string;
-            url?: string;
-            newTab?: boolean;
-            showArrow?: boolean;
-            params?: {
-              key: string;
-              value: string;
-              id?: string;
-            }[];
-            decoration?: {
-              variant?: 'text' | 'contained' | 'outlined';
-              color?: 'inherit' | 'primary' | 'secondary' | 'white';
-            };
-          };
-          id?: string;
-        }[];
-        id?: string;
-        blockName?: string;
-        blockType: 'features-block';
-      }
-    | {
-        type: 'media' | 'agent';
-        showArrows?: boolean;
-        medias: {
-          media?: {
-            ref?: string | Media;
-            maxHeight?: string;
-            aspectRatio?: string;
-            autoplay?: boolean;
-          };
-          label?: {
-            [k: string]: unknown;
-          }[];
-          id?: string;
-        }[];
-        agents: string[] | Agent[];
-        id?: string;
-        blockName?: string;
-        blockType: 'slider-block';
-      }
-    | {
-        populatedData?: {};
-        populatable?: boolean;
-        id?: string;
-        blockName?: string;
-        blockType: 'testimonials-block';
-      }
-    | {
-        cards: {
-          title?: string;
-          content?: {
-            [k: string]: unknown;
-          }[];
-          media?: {
-            ref?: string | Media;
-            maxHeight?: string;
-            aspectRatio?: string;
-            autoplay?: boolean;
-          };
-          id?: string;
-        }[];
-        id?: string;
-        blockName?: string;
-        blockType: 'expandable-cards-block';
       }
     | {
         compact?: boolean;
@@ -1804,15 +543,11 @@ export interface ReusableContent {
         blockType: 'media-grid-block';
       }
     | {
-        content?: {
-          [k: string]: unknown;
-        }[];
-        id?: string;
-        blockName?: string;
-        blockType: 'content-block';
-      }
-    | {
-        medias?: {
+        cards: {
+          title?: string;
+          content?: {
+            [k: string]: unknown;
+          }[];
           media?: {
             ref?: string | Media;
             maxHeight?: string;
@@ -1821,29 +556,49 @@ export interface ReusableContent {
           };
           id?: string;
         }[];
-        gap?: string;
         id?: string;
         blockName?: string;
-        blockType: 'media-set-block';
+        blockType: 'expandable-cards-block';
+      }
+    | {
+        title?: {
+          [k: string]: unknown;
+        }[];
+        assets?: {
+          asset: string | Media;
+          name?: string;
+          boxed?: boolean;
+          id?: string;
+        }[];
+        columns?: string;
+        mediaAspectRatio?: string;
+        hideDownloadButton?: boolean;
+        id?: string;
+        blockName?: string;
+        blockType: 'downloadable-assets-block';
       }
     | {
         actions?: {
           action?: {
-            type?:
-              | 'reference'
-              | 'custom'
-              | 'current-document'
-              | 'app-store'
-              | 'google-play-store';
+            type?: 'reference' | 'custom' | 'current-document';
             reference?: {
-              value?: {
-                value: string | Page;
-                relationTo: 'pages';
-              };
+              value?:
+                | {
+                    value: string | Page;
+                    relationTo: 'pages';
+                  }
+                | {
+                    value: string | ConsularService;
+                    relationTo: 'consular-services';
+                  }
+                | {
+                    value: string | NewsArticle;
+                    relationTo: 'news-articles';
+                  };
             };
+            url?: string;
             section?: string;
             label?: string;
-            url?: string;
             newTab?: boolean;
             showArrow?: boolean;
             params?: {
@@ -1863,17 +618,405 @@ export interface ReusableContent {
         blockType: 'action-group-block';
       }
   )[];
+  meta?: {
+    title?: string;
+    description?: string;
+    image?: string | Media;
+  };
+  _status?: 'draft' | 'published';
   createdAt: string;
   updatedAt: string;
 }
-export interface Agent {
+export interface ConsularService {
   id: string;
-  name?: string;
-  location?: string;
-  photo?: string | Media;
-  story?: {
+  title: string;
+  slug?: string;
+  category: 'immigration' | 'consular';
+  group?: string;
+  order?: number;
+  shortDescription: string;
+  lead?: string;
+  icon?: string | Media;
+  actions?: {
+    action?: {
+      type?: 'reference' | 'custom' | 'current-document';
+      reference?: {
+        value?:
+          | {
+              value: string | Page;
+              relationTo: 'pages';
+            }
+          | {
+              value: string | ConsularService;
+              relationTo: 'consular-services';
+            }
+          | {
+              value: string | NewsArticle;
+              relationTo: 'news-articles';
+            };
+      };
+      url?: string;
+      section?: string;
+      label?: string;
+      newTab?: boolean;
+      showArrow?: boolean;
+      params?: {
+        key: string;
+        value: string;
+        id?: string;
+      }[];
+      decoration?: {
+        variant?: 'text' | 'contained' | 'outlined';
+        color?: 'inherit' | 'primary' | 'secondary' | 'white';
+      };
+    };
+    id?: string;
+  }[];
+  overview?: {
     [k: string]: unknown;
   }[];
+  steps?: {
+    title: string;
+    description?: {
+      [k: string]: unknown;
+    }[];
+    id?: string;
+  }[];
+  processingTime?: string;
+  fees?: {
+    item: string;
+    amount: string;
+    paymentMethod?: string;
+    note?: string;
+    id?: string;
+  }[];
+  requirements?: {
+    heading?: string;
+    items: {
+      text: string;
+      note?: string;
+      id?: string;
+    }[];
+    id?: string;
+  }[];
+  downloads?: {
+    label: string;
+    file: string | Media;
+    id?: string;
+  }[];
+  relatedServices?: string[] | ConsularService[];
+  extraSections?: (
+    | {
+        content: {
+          [k: string]: unknown;
+        }[];
+        width?: 'narrow' | 'default' | 'wide';
+        section?: {
+          theme?: 'paper' | 'cream' | 'deep' | 'gold';
+          spacing?: 'default' | 'compact' | 'spacious' | 'none';
+        };
+        id?: string;
+        blockName?: string;
+        blockType: 'rich-text';
+      }
+    | {
+        severity: 'notice' | 'warning' | 'emergency';
+        badge?: string;
+        message: string;
+        link?: {
+          enabled?: boolean;
+          value?: {
+            type?: 'reference' | 'custom' | 'current-document';
+            reference?: {
+              value?:
+                | {
+                    value: string | Page;
+                    relationTo: 'pages';
+                  }
+                | {
+                    value: string | ConsularService;
+                    relationTo: 'consular-services';
+                  }
+                | {
+                    value: string | NewsArticle;
+                    relationTo: 'news-articles';
+                  };
+            };
+            url?: string;
+            section?: string;
+            label?: string;
+            newTab?: boolean;
+          };
+        };
+        dismissible?: boolean;
+        id?: string;
+        blockName?: string;
+        blockType: 'alert-bar';
+      }
+    | {
+        arrangement?: 'media-first' | 'content-first';
+        emphasis?: 'moderate' | 'media' | 'content';
+        content: {
+          [k: string]: unknown;
+        }[];
+        media?: {
+          ref?: string | Media;
+          maxHeight?: string;
+          aspectRatio?: string;
+          autoplay?: boolean;
+        };
+        actions?: {
+          action?: {
+            type?: 'reference' | 'custom' | 'current-document';
+            reference?: {
+              value?:
+                | {
+                    value: string | Page;
+                    relationTo: 'pages';
+                  }
+                | {
+                    value: string | ConsularService;
+                    relationTo: 'consular-services';
+                  }
+                | {
+                    value: string | NewsArticle;
+                    relationTo: 'news-articles';
+                  };
+            };
+            url?: string;
+            section?: string;
+            label?: string;
+            newTab?: boolean;
+            showArrow?: boolean;
+            params?: {
+              key: string;
+              value: string;
+              id?: string;
+            }[];
+            decoration?: {
+              variant?: 'text' | 'contained' | 'outlined';
+              color?: 'inherit' | 'primary' | 'secondary' | 'white';
+            };
+          };
+          id?: string;
+        }[];
+        backgroundMedia?: string | Media;
+        section?: {
+          theme?: 'paper' | 'cream' | 'deep' | 'gold';
+          spacing?: 'default' | 'compact' | 'spacious' | 'none';
+        };
+        id?: string;
+        blockName?: string;
+        blockType: 'media-content-block';
+      }
+    | {
+        eyebrow?: string;
+        heading?: string;
+        intro?: string;
+        variant?: 'cards' | 'tasks' | 'plain';
+        columns?: '2' | '3' | '4';
+        items: {
+          icon?: string | Media;
+          title: string;
+          description?: string;
+          action?: {
+            enabled?: boolean;
+            value?: {
+              type?: 'reference' | 'custom' | 'current-document';
+              reference?: {
+                value?:
+                  | {
+                      value: string | Page;
+                      relationTo: 'pages';
+                    }
+                  | {
+                      value: string | ConsularService;
+                      relationTo: 'consular-services';
+                    }
+                  | {
+                      value: string | NewsArticle;
+                      relationTo: 'news-articles';
+                    };
+              };
+              url?: string;
+              section?: string;
+              label?: string;
+              newTab?: boolean;
+            };
+          };
+          id?: string;
+        }[];
+        section?: {
+          theme?: 'paper' | 'cream' | 'deep' | 'gold';
+          spacing?: 'default' | 'compact' | 'spacious' | 'none';
+        };
+        id?: string;
+        blockName?: string;
+        blockType: 'item-grid-block';
+      }
+    | {
+        cards: {
+          title?: string;
+          content?: {
+            [k: string]: unknown;
+          }[];
+          media?: {
+            ref?: string | Media;
+            maxHeight?: string;
+            aspectRatio?: string;
+            autoplay?: boolean;
+          };
+          id?: string;
+        }[];
+        id?: string;
+        blockName?: string;
+        blockType: 'expandable-cards-block';
+      }
+    | {
+        title?: {
+          [k: string]: unknown;
+        }[];
+        assets?: {
+          asset: string | Media;
+          name?: string;
+          boxed?: boolean;
+          id?: string;
+        }[];
+        columns?: string;
+        mediaAspectRatio?: string;
+        hideDownloadButton?: boolean;
+        id?: string;
+        blockName?: string;
+        blockType: 'downloadable-assets-block';
+      }
+    | {
+        actions?: {
+          action?: {
+            type?: 'reference' | 'custom' | 'current-document';
+            reference?: {
+              value?:
+                | {
+                    value: string | Page;
+                    relationTo: 'pages';
+                  }
+                | {
+                    value: string | ConsularService;
+                    relationTo: 'consular-services';
+                  }
+                | {
+                    value: string | NewsArticle;
+                    relationTo: 'news-articles';
+                  };
+            };
+            url?: string;
+            section?: string;
+            label?: string;
+            newTab?: boolean;
+            showArrow?: boolean;
+            params?: {
+              key: string;
+              value: string;
+              id?: string;
+            }[];
+            decoration?: {
+              variant?: 'text' | 'contained' | 'outlined';
+              color?: 'inherit' | 'primary' | 'secondary' | 'white';
+            };
+          };
+          id?: string;
+        }[];
+        id?: string;
+        blockName?: string;
+        blockType: 'action-group-block';
+      }
+    | {
+        size?: 'default' | 'full-width';
+        media: {
+          ref: string | Media;
+          maxHeight?: string;
+          aspectRatio?: string;
+          autoplay?: boolean;
+        };
+        caption?: string;
+        centered?: boolean;
+        id?: string;
+        blockName?: string;
+        blockType: 'media-block';
+      }
+  )[];
+  meta?: {
+    title?: string;
+    description?: string;
+    image?: string | Media;
+  };
+  _status?: 'draft' | 'published';
+  createdAt: string;
+  updatedAt: string;
+}
+export interface Media {
+  id: string;
+  alt: string;
+  url?: string;
+  filename?: string;
+  mimeType?: string;
+  filesize?: number;
+  width?: number;
+  height?: number;
+  createdAt: string;
+  updatedAt: string;
+}
+export interface NewsArticle {
+  id: string;
+  title: string;
+  slug?: string;
+  publishedDate: string;
+  category:
+    | 'announcements'
+    | 'consular-updates'
+    | 'immigration'
+    | 'high-commission-activities'
+    | 'nigeria-australia-relations'
+    | 'community'
+    | 'events';
+  author?: string;
+  tags?: string;
+  excerpt: string;
+  coverImage?: string | Media;
+  body: {
+    [k: string]: unknown;
+  }[];
+  meta?: {
+    title?: string;
+    description?: string;
+    image?: string | Media;
+  };
+  _status?: 'draft' | 'published';
+  createdAt: string;
+  updatedAt: string;
+}
+export interface StaffMember {
+  id: string;
+  name: string;
+  title: string;
+  photo?: string | Media;
+  bio?: {
+    [k: string]: unknown;
+  }[];
+  socialLinks?: {
+    platform:
+      | 'x'
+      | 'facebook'
+      | 'instagram'
+      | 'linkedin'
+      | 'youtube'
+      | 'tiktok'
+      | 'whatsapp';
+    url: string;
+    handle?: string;
+    id?: string;
+  }[];
+  order?: number;
+  isHighCommissioner?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -2016,143 +1159,6 @@ export interface UserRole {
   createdAt: string;
   updatedAt: string;
 }
-export interface Testimonial {
-  id: string;
-  name: string;
-  rating: string;
-  photo?: string | Media;
-  content: {
-    [k: string]: unknown;
-  }[];
-  createdAt: string;
-  updatedAt: string;
-}
-export interface CaseStudy {
-  id: string;
-  pageLayout?: {
-    header: string | Header;
-    footer: string | Footer;
-  };
-  name: string;
-  media?: string | Media;
-  content: {
-    [k: string]: unknown;
-  }[];
-  slug?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-export interface Opening {
-  id: string;
-  pageLayout?: {
-    header: string | Header;
-    footer: string | Footer;
-  };
-  title?: string;
-  department?: string;
-  location?: string;
-  remote?: boolean;
-  description?: {
-    [k: string]: unknown;
-  }[];
-  createdAt: string;
-  updatedAt: string;
-}
-export interface BlogPost {
-  id: string;
-  pageLayout?: {
-    header: string | Header;
-    footer: string | Footer;
-  };
-  type: 'coin-chronicles' | 'bankly-bytes';
-  title: string;
-  summary: string;
-  author: string | User;
-  category: string | BlogPostCategory;
-  slug?: string;
-  media?: {
-    ref?: string | Media;
-    maxHeight?: string;
-    aspectRatio?: string;
-    autoplay?: boolean;
-  };
-  tags?: string;
-  estimatedReadTime: string;
-  content: {
-    [k: string]: unknown;
-  }[];
-  _status?: 'draft' | 'published';
-  createdAt: string;
-  updatedAt: string;
-}
-export interface BlogPostCategory {
-  id: string;
-  name?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-export interface HelpTopic {
-  id: string;
-  pageLayout?: {
-    header: string | Header;
-    footer: string | Footer;
-  };
-  icon: string | Media;
-  title: string;
-  slug?: string;
-  handler?: string | User;
-  description?: {
-    [k: string]: unknown;
-  }[];
-  meta?: {
-    answerCount?: string;
-    helpfulCount?: string;
-    unhelpfulCount?: string;
-    viewCount?: string;
-  };
-  createdAt: string;
-  updatedAt: string;
-}
-export interface HelpArticle {
-  id: string;
-  pageLayout?: {
-    header: string | Header;
-    footer: string | Footer;
-  };
-  topic?: string | HelpTopic;
-  title: string;
-  slug?: string;
-  summary?: string;
-  author?: string | User;
-  content?: {
-    [k: string]: unknown;
-  }[];
-  meta?: {
-    helpfulCount?: string;
-    unhelpfulCount?: string;
-    viewCount?: string;
-  };
-  createdAt: string;
-  updatedAt: string;
-}
-export interface TeamMember {
-  id: string;
-  name?: string;
-  designation?: string;
-  media?: string | Media;
-  createdAt: string;
-  updatedAt: string;
-}
-export interface PressPost {
-  id: string;
-  title: string;
-  description: string;
-  media: string | Media;
-  url: string;
-  date?: string;
-  createdAt: string;
-  updatedAt: string;
-}
 export interface FormSubmission {
   id: string;
   form: string | Form;
@@ -2163,4 +1169,190 @@ export interface FormSubmission {
   }[];
   createdAt: string;
   updatedAt: string;
+}
+export interface Header {
+  id: string;
+  items: {
+    label: string;
+    type: 'link' | 'dropdown';
+    action?: {
+      type?: 'reference' | 'custom' | 'current-document';
+      reference?: {
+        value?:
+          | {
+              value: string | Page;
+              relationTo: 'pages';
+            }
+          | {
+              value: string | ConsularService;
+              relationTo: 'consular-services';
+            }
+          | {
+              value: string | NewsArticle;
+              relationTo: 'news-articles';
+            };
+      };
+      url?: string;
+      section?: string;
+      newTab?: boolean;
+    };
+    highlight?: boolean;
+    groups?: {
+      label?: string;
+      links: {
+        label: string;
+        action?: {
+          type?: 'reference' | 'custom' | 'current-document';
+          reference?: {
+            value?:
+              | {
+                  value: string | Page;
+                  relationTo: 'pages';
+                }
+              | {
+                  value: string | ConsularService;
+                  relationTo: 'consular-services';
+                }
+              | {
+                  value: string | NewsArticle;
+                  relationTo: 'news-articles';
+                };
+          };
+          url?: string;
+          section?: string;
+          newTab?: boolean;
+        };
+        id?: string;
+      }[];
+      id?: string;
+    }[];
+    id?: string;
+  }[];
+}
+export interface Footer {
+  id: string;
+  columns?: {
+    title: string;
+    links: {
+      label: string;
+      action?: {
+        type?: 'reference' | 'custom' | 'current-document';
+        reference?: {
+          value?:
+            | {
+                value: string | Page;
+                relationTo: 'pages';
+              }
+            | {
+                value: string | ConsularService;
+                relationTo: 'consular-services';
+              }
+            | {
+                value: string | NewsArticle;
+                relationTo: 'news-articles';
+              };
+        };
+        url?: string;
+        section?: string;
+        newTab?: boolean;
+      };
+      id?: string;
+    }[];
+    id?: string;
+  }[];
+  contact?: {
+    organisationName?: string;
+    address?: string;
+    phone?: string;
+    email?: string;
+    hours?: string;
+  };
+  socialLinks?: {
+    platform:
+      | 'x'
+      | 'facebook'
+      | 'instagram'
+      | 'linkedin'
+      | 'youtube'
+      | 'tiktok'
+      | 'whatsapp';
+    url: string;
+    handle?: string;
+    id?: string;
+  }[];
+  ministry?: {
+    label?: string;
+    logo?: string | Media;
+    url?: string;
+  };
+  copyright?: string;
+  bottomLinks?: {
+    label: string;
+    action?: {
+      type?: 'reference' | 'custom' | 'current-document';
+      reference?: {
+        value?:
+          | {
+              value: string | Page;
+              relationTo: 'pages';
+            }
+          | {
+              value: string | ConsularService;
+              relationTo: 'consular-services';
+            }
+          | {
+              value: string | NewsArticle;
+              relationTo: 'news-articles';
+            };
+      };
+      url?: string;
+      section?: string;
+      newTab?: boolean;
+    };
+    id?: string;
+  }[];
+}
+export interface SiteSetting {
+  id: string;
+  siteName: string;
+  siteTagline?: string;
+  emblem?: string | Media;
+  logo?: string | Media;
+  ogImage?: string | Media;
+  alertBar?: {
+    enabled?: boolean;
+    severity?: 'notice' | 'warning' | 'emergency';
+    badge?: string;
+    message?: string;
+    link?: {
+      enabled?: boolean;
+      value?: {
+        type?: 'reference' | 'custom' | 'current-document';
+        reference?: {
+          value?:
+            | {
+                value: string | Page;
+                relationTo: 'pages';
+              }
+            | {
+                value: string | ConsularService;
+                relationTo: 'consular-services';
+              }
+            | {
+                value: string | NewsArticle;
+                relationTo: 'news-articles';
+              };
+        };
+        url?: string;
+        section?: string;
+        label?: string;
+        newTab?: boolean;
+      };
+    };
+    dismissible?: boolean;
+  };
+  seo?: {
+    titleTemplate?: string;
+    defaultDescription?: string;
+  };
 }

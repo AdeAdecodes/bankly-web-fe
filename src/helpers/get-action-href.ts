@@ -1,14 +1,35 @@
-import { querify } from '~/utils/querify';
 import { Action } from '~/types';
+import { querify } from '~/utils/querify';
 
-function getActionHref(action: Action, defaultPath = ''): string {
+type LinkableCollection = 'pages' | 'consular-services' | 'news-articles';
+
+const COLLECTION_PATHS: Record<LinkableCollection, (slug: string) => string> = {
+  pages: (slug) => (slug === 'home' || slug === '' ? '/' : `/${slug}`),
+  'consular-services': (slug) => `/services/${slug}`,
+  'news-articles': (slug) => `/news/${slug}`,
+};
+
+/** Route for a document in one of the linkable collections. */
+export function getCollectionPath(
+  relationTo: string,
+  slug?: string | null
+): string {
+  const toPath = (
+    COLLECTION_PATHS as Partial<Record<string, (slug: string) => string>>
+  )[relationTo];
+  return toPath && slug ? toPath(slug) : '';
+}
+
+function getActionHref(action?: Action | null, defaultPath = ''): string {
+  if (!action) return defaultPath;
+
   const path = getPath(action) || defaultPath;
   const fragment = action.section;
 
   return withFragment(querify(path, toQuery(action.params)), fragment);
 }
 
-function withFragment(url: string, fragment?: string) {
+function withFragment(url: string, fragment?: string | null) {
   return !fragment ? url : `${url}#${fragment}`;
 }
 
@@ -22,13 +43,7 @@ function getPath(action: Action): string {
   const doc = reference?.value;
 
   if (type === 'reference' && doc && typeof doc.value !== 'string') {
-    if (doc.relationTo === 'pages') {
-      return `/${doc.value.slug!}`;
-    }
-
-    // TODO: account for other reference types
-
-    // return `/${doc.relationTo}/${doc.value.slug!}`;
+    return getCollectionPath(doc.relationTo, doc.value.slug);
   }
 
   return '';

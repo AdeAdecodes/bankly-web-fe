@@ -1,42 +1,43 @@
-import CMSPageImpl from '~/components/impls/cms-page';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import fetchSiteGlobals from '~/api/helpers/globals/fetch-site-globals';
+import fetchPage from '~/api/helpers/pages/fetch-page';
+import CMSPageImpl from '~/components/impls/cms-page';
 import CMSPageLayout from '~/components/layouts/cms-page-layout';
 import defineComponent from '~/helpers/define-component';
-import { Page } from '~/types';
-import fetchPage from '~/api/helpers/pages/fetch-page';
-import { PageBreadcrumbsProvider } from '~/components/generics/page-breadcrumbs';
+import { Page, SiteGlobals } from '~/types';
 
-type CMSPageProps = {
+export type CMSPageProps = {
   page: Page;
+  globals: SiteGlobals;
 };
 
-function CMSPage({ page }: CMSPageProps) {
-  if (!page) {
-    return null;
-  }
+function CMSPage({ page, globals }: CMSPageProps) {
+  if (!page) return null;
 
-  return (
-    <PageBreadcrumbsProvider breadcrumbs={page.breadcrumbs || []}>
-      <CMSPageImpl page={page} />
-    </PageBreadcrumbsProvider>
-  );
+  return <CMSPageImpl page={page} settings={globals.siteSettings} />;
 }
 
 CMSPage.Layout = defineComponent(CMSPageLayout, (pageProps: CMSPageProps) => ({
-  layout: pageProps.page.layout!,
+  globals: pageProps.globals,
 }));
 
 export async function getServerSideProps(
   ctx: GetServerSidePropsContext
-): Promise<GetServerSidePropsResult<any>> {
-  const page = await fetchPage(ctx.params?.slug as any);
+): Promise<GetServerSidePropsResult<CMSPageProps>> {
+  const [page, globals] = await Promise.all([
+    fetchPage(ctx.params?.slug as string[] | undefined),
+    fetchSiteGlobals(),
+  ]);
 
   if (!page) return { notFound: true };
 
+  ctx.res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=60, stale-while-revalidate=300'
+  );
+
   return {
-    props: {
-      page,
-    },
+    props: { page, globals },
   };
 }
 

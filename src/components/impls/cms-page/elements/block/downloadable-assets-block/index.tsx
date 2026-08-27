@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import { Theme, Typography } from '@mui/material';
 import DownloadableLink from '~/components/generics/downloadable-link';
 import DownloadIcon from '~/components/icons/download';
 import AspectRatio from '~/components/shared/aspect-ratio';
@@ -54,9 +54,9 @@ function DownloadableAssetCard({
     <Column gap={2}>
       <AspectRatio
         value={aspectRatio}
-        borderRadius={1.5}
-        boxShadow="0px 0px 1px rgba(12, 26, 75, 0.1), 0px 4px 20px -2px rgba(50, 50, 71, 0.08)"
+        borderRadius="12px"
         overflow="hidden"
+        sx={{ boxShadow: (theme: Theme) => theme.palette.customShadows.card }}
       >
         <MediaField
           media={media}

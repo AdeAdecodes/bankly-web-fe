@@ -1,31 +1,60 @@
 import React from 'react';
-import { Block } from '~/types';
-import BlogPostsBlock from './blog-posts-block';
-import ConditionalBlock from './conditional-block';
-import ContentContentBlock from './content-content-block';
+import { Block, BlockType } from '~/types';
+import SectionWrapper from '../section-wrapper';
+import ActionGroupBlock from './action-group-block';
+import ContactFormBlock from './contact-form';
 import DownloadableAssetsBlock from './downloadable-assets-block';
 import ExpandableCardsBlock from './expandable-cards-block';
-import FeaturesBlock from './features-block';
-import FormWithInfoBlock from './form-with-info-block';
-import HelpSearchBoxBlock from './help-search-box-block';
-import HelpTopicsBlock from './help-topics-block';
+import HeroSliderBlock from './hero-slider';
+import HighCommissionerSectionBlock from './high-commissioner-section';
 import ItemGridBlock from './item-grid-block';
 import MediaBlock from './media-block';
 import MediaContentBlock from './media-content-block';
 import MediaGridBlock from './media-grid-block';
-import MediaKitCardsBlock from './media-kit-cards-block';
-import OpeningsBlock from './openings-block';
-import PressPostsBlock from './press-posts-block';
-import ReusableContentBlock from './reusable-content-block';
-import SliderBlock from './slider-block';
-import TabsBlock from './tabs-block';
-import TeamMembersBlock from './team-members-block';
-import TestimonialsBlock from './testimonials-block';
-import TitleBlock from './title-block';
-import ContentBlock from './content-block';
-import MediaSetBlock from './media-set-block';
-import ActionGroupBlock from './action-group-block';
-import CaseStudiesBlock from './case-studies-block';
+import NewsGridBlock from './news-grid';
+import RichTextBlock from './rich-text';
+import ServiceGridBlock from './service-grid';
+import StatsSectionBlock from './stats-section';
+import VideoGalleryBlock from './video-gallery';
+
+type BlockComponent = React.ComponentType<{ block: any }>;
+
+/** Placeholder for block types whose frontend component is not built yet. */
+const NullBlock: BlockComponent = () => null;
+
+/**
+ * blockType → React component. Every block type from the CMS must have an
+ * entry; unfinished ones render nothing rather than breaking the page.
+ */
+export const blockTypeToComponentMap: Record<BlockType, BlockComponent> = {
+  'hero-slider': HeroSliderBlock,
+  'page-hero': NullBlock, // milestone 2
+  'alert-bar': NullBlock, // milestone 2
+  'service-grid': ServiceGridBlock,
+  'high-commissioner-section': HighCommissionerSectionBlock,
+  'stats-section': StatsSectionBlock,
+  'video-gallery': VideoGalleryBlock,
+  'news-grid': NewsGridBlock,
+  'staff-grid': NullBlock, // milestone 2
+  'rich-text': RichTextBlock,
+  'contact-form': ContactFormBlock,
+  'media-content-block': MediaContentBlock,
+  'item-grid-block': ItemGridBlock,
+  'media-block': MediaBlock,
+  'media-grid-block': MediaGridBlock,
+  'expandable-cards-block': ExpandableCardsBlock,
+  'downloadable-assets-block': DownloadableAssetsBlock,
+  'action-group-block': ActionGroupBlock,
+};
+
+/** Legacy blocks that render bare content — give them a standard section band. */
+const BARE_BLOCKS = new Set<BlockType>([
+  'media-block',
+  'media-grid-block',
+  'expandable-cards-block',
+  'downloadable-assets-block',
+  'action-group-block',
+]);
 
 type CMSBlockProps = {
   block: Block;
@@ -34,46 +63,51 @@ type CMSBlockProps = {
 function CMSBlock({ block }: CMSBlockProps) {
   const Component = blockTypeToComponentMap[block.blockType];
 
-  if (!Component) return null;
+  if (!Component) {
+    if (process.env.NODE_ENV !== 'production') {
+      // eslint-disable-next-line no-console
+      console.warn(
+        `[CMSBlock] no component registered for "${block.blockType}"`
+      );
+    }
+    return null;
+  }
+
+  const content = <Component block={block} />;
 
   return (
-    <React.Fragment>
-      {block.blockName && <div id={block.blockName} />}
-      <Component block={block} />
-    </React.Fragment>
+    <BlockErrorBoundary blockType={block.blockType}>
+      {BARE_BLOCKS.has(block.blockType) ? (
+        <SectionWrapper id={block.blockName}>{content}</SectionWrapper>
+      ) : (
+        content
+      )}
+    </BlockErrorBoundary>
   );
 }
 
-const blockTypeToComponentMap: Record<
-  Block['blockType'],
-  React.ComponentType<{ block: any }>
-> = {
-  'conditional-block': ConditionalBlock,
-  'title-block': TitleBlock,
-  'media-content-block': MediaContentBlock,
-  'media-block': MediaBlock,
-  'reusable-content-block': ReusableContentBlock,
-  'tabs-block': TabsBlock,
-  'features-block': FeaturesBlock,
-  'item-grid-block': ItemGridBlock,
-  'testimonials-block': TestimonialsBlock,
-  'slider-block': SliderBlock,
-  'media-grid-block': MediaGridBlock,
-  'expandable-cards-block': ExpandableCardsBlock,
-  'content-content-block': ContentContentBlock,
-  'openings-block': OpeningsBlock,
-  'downloadable-assets-block': DownloadableAssetsBlock,
-  'media-kit-cards-block': MediaKitCardsBlock,
-  'press-posts-block': PressPostsBlock,
-  'team-members-block': TeamMembersBlock,
-  'blog-posts-block': BlogPostsBlock,
-  'help-topics-block': HelpTopicsBlock,
-  'help-search-box-block': HelpSearchBoxBlock,
-  'form-with-info-block': FormWithInfoBlock,
-  'content-block': ContentBlock,
-  'media-set-block': MediaSetBlock,
-  'action-group-block': ActionGroupBlock,
-  'case-studies-block': CaseStudiesBlock,
-};
+type BoundaryProps = { blockType: string; children: React.ReactNode };
+type BoundaryState = { failed: boolean };
+
+/** A single misconfigured block must never take the whole page down. */
+class BlockErrorBoundary extends React.Component<BoundaryProps, BoundaryState> {
+  state: BoundaryState = { failed: false };
+
+  static getDerivedStateFromError(): BoundaryState {
+    return { failed: true };
+  }
+
+  componentDidCatch(error: unknown) {
+    // eslint-disable-next-line no-console
+    console.error(
+      `[CMSBlock] "${this.props.blockType}" failed to render`,
+      error
+    );
+  }
+
+  render() {
+    return this.state.failed ? null : this.props.children;
+  }
+}
 
 export default CMSBlock;
