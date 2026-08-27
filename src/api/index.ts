@@ -13,7 +13,7 @@ type ApiInstance = AxiosInstance & {
 };
 
 const api = axios.create({
-  baseURL: `${config.cms.url!}/api`,
+  baseURL: `${config.cms.url}/api`,
   timeout: 60000,
   timeoutErrorMessage: 'Request timeout',
 }) as ApiInstance;

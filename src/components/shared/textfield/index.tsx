@@ -62,10 +62,6 @@ function TextFieldRoot({ raisedLabel, ...props }: TextFieldProps) {
           PaperProps: {
             ...props.SelectProps?.MenuProps?.PaperProps,
             sx: {
-              // background: '#F1F2F4',
-              // boxShadow: 0,
-              // borderRadius: 4,
-              // marginTop: 1,
               ...props.SelectProps?.MenuProps?.PaperProps?.sx,
             },
           },

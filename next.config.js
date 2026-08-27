@@ -1,18 +1,53 @@
 /** @type {import('next').NextConfig} */
+
+// Legacy static-site URLs (casa-web) → CMS-driven routes. All permanent (301).
+const SERVICE_SLUGS = [
+  'tourist-visa',
+  'business-visa',
+  'str-visa',
+  'temporary-work-permit-visa',
+  'e-passport',
+  'emergency-travel-certificate',
+  'nin-enrollment',
+  'life-attestation-letter',
+  'police-check-character-certificate',
+  'certification-drivers-license',
+  'certification-of-documents',
+  'certification-personal-documents',
+  'certification-products-import',
+];
+
+const PAGE_SLUGS = [
+  'about-nigeria',
+  'contact-us',
+  'mission-staff',
+  'trade-and-investments',
+];
+
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  // distDir: 'dist',
-  // output: 'export',
   output: 'standalone',
-    
-  // Redirects configuration
+
   async redirects() {
     return [
+      { source: '/home', destination: '/', statusCode: 301 },
+      { source: '/index.html', destination: '/', statusCode: 301 },
       {
-        source: '/home',  // The URL path you want to redirect from
-        destination: '/',  // The URL path you want to redirect to
-        permanent: true,   // Permanent redirect (301)
+        source: `/:slug(${SERVICE_SLUGS.join('|')}).html`,
+        destination: '/services/:slug',
+        statusCode: 301,
+      },
+      {
+        source: `/:slug(${PAGE_SLUGS.join('|')}).html`,
+        destination: '/:slug',
+        statusCode: 301,
+      },
+      { source: '/news/index.html', destination: '/news', statusCode: 301 },
+      {
+        source: '/news/:slug/index.html',
+        destination: '/news/:slug',
+        statusCode: 301,
       },
     ];
   },
@@ -36,15 +71,14 @@ const nextConfig = {
         issuer: /\.[jt]sx?$/,
         resourceQuery: { not: /url/ }, // exclude if *.svg?url
         use: ['@svgr/webpack'],
-      },
+      }
     );
 
     // Modify the file loader rule to ignore *.svg, since we have it handled now.
     fileLoaderRule.exclude = /\.svg$/i;
 
     return config;
-  }
-
+  },
 };
 
 module.exports = nextConfig;
