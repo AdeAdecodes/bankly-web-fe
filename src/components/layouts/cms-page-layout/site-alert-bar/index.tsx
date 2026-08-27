@@ -1,9 +1,7 @@
-import { Box, IconButton, Typography, useTheme } from '@mui/material';
-import { Close } from 'mdi-material-ui';
+import { Box } from '@mui/material';
 import React from 'react';
 import ContentBox from '~/components/generics/content-box';
-import { Row } from '~/components/shared/layout';
-import Link from '~/components/shared/link';
+import AlertBar from '~/components/shared/alert-bar';
 import getActionHref from '~/helpers/get-action-href';
 import { SiteSetting } from '~/types';
 
@@ -13,7 +11,6 @@ type SiteAlertBarProps = {
 
 /** Site-wide notice above the header (Site Settings → Alert bar). */
 function SiteAlertBar({ settings }: SiteAlertBarProps) {
-  const theme = useTheme();
   const bar = settings?.alertBar;
   const storageKey = `nhc-alert-dismissed:${hash(bar?.message || '')}`;
   const [dismissed, setDismissed] = React.useState(false);
@@ -28,9 +25,7 @@ function SiteAlertBar({ settings }: SiteAlertBarProps) {
 
   if (!bar?.enabled || !bar.message || dismissed) return null;
 
-  const severity = bar.severity ?? 'notice';
-  const palette = theme.palette.alert[severity];
-  const link = bar.link?.enabled ? bar.link.value : undefined;
+  const link = bar.link?.enabled && bar.link.value ? bar.link.value : undefined;
 
   function dismiss() {
     setDismissed(true);
@@ -43,85 +38,28 @@ function SiteAlertBar({ settings }: SiteAlertBarProps) {
 
   return (
     <Box
-      role="region"
-      aria-label="Site notice"
       sx={{
-        bgcolor: palette.bg,
-        color: palette.fg,
-        borderBottom: `1px solid ${palette.border}`,
+        bgcolor: (theme) => theme.palette.alert[bar.severity ?? 'notice'].bg,
+        borderBottom: (theme) =>
+          `1px solid ${theme.palette.alert[bar.severity ?? 'notice'].border}`,
       }}
     >
       <ContentBox>
-        <Row crossAxisAlignment="center" gap={1.75} py={1.125}>
-          <Row
-            component="span"
-            crossAxisAlignment="center"
-            gap={0.875}
-            sx={{
-              flex: 'none',
-              fontWeight: 700,
-              textTransform: 'uppercase',
-              letterSpacing: '0.08em',
-              fontSize: 11,
-              bgcolor: palette.accent,
-              color: palette.badgeFg,
-              px: 1.375,
-              py: 0.625,
-              borderRadius: '20px',
-            }}
-          >
-            <Box
-              component="span"
-              aria-hidden
-              sx={{
-                width: 8,
-                height: 8,
-                borderRadius: '50%',
-                bgcolor: palette.dot,
-                animation:
-                  severity === 'emergency'
-                    ? 'nhc-alert-pulse 2s infinite'
-                    : undefined,
-                '@keyframes nhc-alert-pulse': {
-                  '0%': { boxShadow: `0 0 0 0 ${palette.dot}` },
-                  '70%': { boxShadow: `0 0 0 7px transparent` },
-                  '100%': { boxShadow: `0 0 0 0 transparent` },
-                },
-              }}
-            />
-            {bar.badge || 'Notice'}
-          </Row>
-          <Typography flex={1} fontSize={13.5} lineHeight={1.45}>
-            {bar.message}
-            {link && (
-              <React.Fragment>
-                {' '}
-                <Link
-                  href={getActionHref(link)}
-                  target={link.newTab ? '_blank' : undefined}
-                  sx={{
-                    color: 'inherit',
-                    textDecoration: 'underline',
-                    fontWeight: 700,
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {link.label || 'Read more'}
-                </Link>
-              </React.Fragment>
-            )}
-          </Typography>
-          {bar.dismissible !== false && (
-            <IconButton
-              aria-label="Dismiss notice"
-              size="small"
-              onClick={dismiss}
-              sx={{ color: 'inherit', flex: 'none' }}
-            >
-              <Close fontSize="small" />
-            </IconButton>
-          )}
-        </Row>
+        <AlertBar
+          severity={bar.severity}
+          badge={bar.badge}
+          message={bar.message}
+          link={
+            link
+              ? {
+                  href: getActionHref(link, '#'),
+                  label: link.label || 'Read more',
+                  newTab: link.newTab,
+                }
+              : undefined
+          }
+          onDismiss={bar.dismissible !== false ? dismiss : undefined}
+        />
       </ContentBox>
     </Box>
   );

@@ -2,6 +2,7 @@ import React from 'react';
 import { Block, BlockType } from '~/types';
 import SectionWrapper from '../section-wrapper';
 import ActionGroupBlock from './action-group-block';
+import AlertBarBlock from './alert-bar';
 import ContactFormBlock from './contact-form';
 import DownloadableAssetsBlock from './downloadable-assets-block';
 import ExpandableCardsBlock from './expandable-cards-block';
@@ -12,30 +13,29 @@ import MediaBlock from './media-block';
 import MediaContentBlock from './media-content-block';
 import MediaGridBlock from './media-grid-block';
 import NewsGridBlock from './news-grid';
+import PageHeroBlock from './page-hero';
 import RichTextBlock from './rich-text';
 import ServiceGridBlock from './service-grid';
+import StaffGridBlock from './staff-grid';
 import StatsSectionBlock from './stats-section';
 import VideoGalleryBlock from './video-gallery';
 
 type BlockComponent = React.ComponentType<{ block: any }>;
 
-/** Placeholder for block types whose frontend component is not built yet. */
-const NullBlock: BlockComponent = () => null;
-
 /**
  * blockType → React component. Every block type from the CMS must have an
- * entry; unfinished ones render nothing rather than breaking the page.
+ * entry; unknown types render nothing rather than breaking the page.
  */
 export const blockTypeToComponentMap: Record<BlockType, BlockComponent> = {
   'hero-slider': HeroSliderBlock,
-  'page-hero': NullBlock, // milestone 2
-  'alert-bar': NullBlock, // milestone 2
+  'page-hero': PageHeroBlock,
+  'alert-bar': AlertBarBlock,
   'service-grid': ServiceGridBlock,
   'high-commissioner-section': HighCommissionerSectionBlock,
   'stats-section': StatsSectionBlock,
   'video-gallery': VideoGalleryBlock,
   'news-grid': NewsGridBlock,
-  'staff-grid': NullBlock, // milestone 2
+  'staff-grid': StaffGridBlock,
   'rich-text': RichTextBlock,
   'contact-form': ContactFormBlock,
   'media-content-block': MediaContentBlock,

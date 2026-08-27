@@ -172,7 +172,12 @@ function PathCard({ item }: { item: Item }) {
       </Typography>
       {item.description && (
         <Typography
-          sx={{ fontSize: 14, color: palette.muted, lineHeight: 1.6 }}
+          sx={{
+            fontSize: 14,
+            color: palette.muted,
+            lineHeight: 1.6,
+            whiteSpace: 'pre-line',
+          }}
         >
           {item.description}
         </Typography>
@@ -216,7 +221,12 @@ function PlainItem({ item }: { item: Item }) {
       </Typography>
       {item.description && (
         <Typography
-          sx={{ fontSize: 14, color: palette.muted, lineHeight: 1.6 }}
+          sx={{
+            fontSize: 14,
+            color: palette.muted,
+            lineHeight: 1.6,
+            whiteSpace: 'pre-line',
+          }}
         >
           {item.description}
         </Typography>
