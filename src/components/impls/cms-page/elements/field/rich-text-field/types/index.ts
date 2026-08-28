@@ -1,4 +1,4 @@
-import { Page, RecordLike } from '~/types';
+import { ConsularService, NewsArticle, Page, RecordLike } from '~/types';
 
 export type RichTextNode =
   | RichTextElNode
@@ -39,14 +39,18 @@ export type RichTextLinkNode =
   | RichTextInternalLinkNode
   | RichTextCustomLinkNode;
 
+type LinkableDoc =
+  | { value: string | Page; relationTo: 'pages' }
+  | { value: string | ConsularService; relationTo: 'consular-services' }
+  | { value: string | NewsArticle; relationTo: 'news-articles' };
+
 type RichTextInternalLinkNode = {
   type: 'link';
   linkType: 'internal';
-  doc: {
-    value: Page;
-    relationTo: string;
-  };
-  newTab: boolean;
+  doc: LinkableDoc;
+  /** optional #anchor on the target page */
+  fragment?: string;
+  newTab?: boolean;
   children: RichTextTextNode[];
 };
 
@@ -54,7 +58,7 @@ type RichTextCustomLinkNode = {
   type: 'link';
   linkType: 'custom';
   url: string;
-  newTab: boolean;
+  newTab?: boolean;
   children: RichTextTextNode[];
 };
 
@@ -63,7 +67,7 @@ export type RichTextMediaNode = {
   value: Media;
   relationTo: string;
   children: RichTextTextNode[];
-  fields: {
+  fields?: {
     maxHeight?: any;
     centered?: boolean;
     fullWidth?: boolean;

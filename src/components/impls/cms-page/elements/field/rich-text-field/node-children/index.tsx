@@ -8,7 +8,6 @@ import { Action, Media } from '~/types';
 import ActionField from '../../action-field';
 import MediaField from '../../media-field';
 import { RichTextLinkNode, RichTextMediaNode, RichTextNode } from '../types';
-import RichTextLabel from './label';
 import RichTextVideo from './video';
 
 type NodeRenderer = (node: RichTextNode) => JSX.Element;
@@ -74,7 +73,8 @@ function renderNode(
   const child = <RichTextFieldNodeChildren value={node.children} />;
 
   if (!('type' in node)) {
-    return <Typography>{child}</Typography>;
+    // keep editor line breaks (addresses, anthem stanzas)
+    return <Typography sx={{ whiteSpace: 'pre-line' }}>{child}</Typography>;
   }
 
   if (renderers?.[node.type]) {
@@ -104,17 +104,24 @@ function renderNode(
       return (
         <MediaField
           media={nodeToMedia(node)}
-          maxHeight={parseValue(node.fields.maxHeight || '')}
+          maxHeight={parseValue(node.fields?.maxHeight || '')}
           sx={{
-            alignSelf: node.fields.centered ? undefined : 'start',
-            mx: node.fields.centered ? 'auto' : undefined,
-            width: node.fields.fullWidth ? '100%' : undefined,
-            objectFit: node.fields.fullWidth ? 'cover' : undefined,
+            alignSelf: node.fields?.centered ? undefined : 'start',
+            mx: node.fields?.centered ? 'auto' : undefined,
+            width: node.fields?.fullWidth ? '100%' : undefined,
+            objectFit: node.fields?.fullWidth ? 'cover' : undefined,
+            borderRadius: '14px',
+            maxWidth: '100%',
           }}
         />
       );
     case 'label':
-      return <RichTextLabel>{child}</RichTextLabel>;
+      // section kicker (casa-web `.k`)
+      return (
+        <Typography variant="eyebrow" color="secondary.dark">
+          {child}
+        </Typography>
+      );
     case 'video':
       return <RichTextVideo node={node} />;
     case 'spacer':
@@ -142,6 +149,7 @@ function nodeToAction(node: RichTextLinkNode): Action {
     reference: {
       value: node.doc as any,
     },
+    section: node.fragment,
     newTab: node.newTab,
   };
 }

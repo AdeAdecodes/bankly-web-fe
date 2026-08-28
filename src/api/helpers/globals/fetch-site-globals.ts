@@ -20,5 +20,11 @@ export default async function fetchSiteGlobals(): Promise<SiteGlobals> {
     fetchGlobal<SiteSetting>('site-settings'),
   ]);
 
-  return { header, footer, siteSettings };
+  // Only set the keys that loaded: Next refuses to serialize `undefined` props,
+  // so a single failed global request must not take the whole page down.
+  const globals: SiteGlobals = {};
+  if (header) globals.header = header;
+  if (footer) globals.footer = footer;
+  if (siteSettings) globals.siteSettings = siteSettings;
+  return globals;
 }
