@@ -3,6 +3,7 @@ import fetchSiteGlobals from '~/api/helpers/globals/fetch-site-globals';
 import populateBlocks from '~/api/helpers/pages/populate-blocks';
 import fetchConsularService from '~/api/helpers/services/fetch-consular-service';
 import fetchConsularServices from '~/api/helpers/services/fetch-consular-services';
+import slimProps, { pickServiceCard } from '~/api/helpers/shared/slim-props';
 import ServicePage from '~/components/impls/service';
 import CMSPageLayout from '~/components/layouts/cms-page-layout';
 import defineComponent from '~/helpers/define-component';
@@ -50,14 +51,25 @@ export async function getServerSideProps(
   const sameGroup = service.group
     ? siblingsResult.filter((item) => item.group === service.group)
     : [];
-  const siblings = sameGroup.length > 1 ? sameGroup : siblingsResult;
+  const siblings = (sameGroup.length > 1 ? sameGroup : siblingsResult).map(
+    pickServiceCard
+  );
+
+  // Tabs and related cards only need card fields; populated rich-text links
+  // embed their whole target doc — slim everything before it becomes props.
+  const slimService = slimProps({
+    ...service,
+    relatedServices: ((service.relatedServices ?? []) as ConsularService[])
+      .filter((related) => typeof related !== 'string')
+      .map(pickServiceCard),
+  });
 
   ctx.res.setHeader(
     'Cache-Control',
     'public, s-maxage=60, stale-while-revalidate=300'
   );
 
-  return { props: { service, siblings, globals } };
+  return { props: { service: slimService, siblings, globals } };
 }
 
 export default ServiceRoute;

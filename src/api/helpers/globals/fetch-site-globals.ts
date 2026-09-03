@@ -1,5 +1,6 @@
 import api from '~/api';
 import { Footer, Header, SiteGlobals, SiteSetting } from '~/types';
+import slimProps from '../shared/slim-props';
 
 async function fetchGlobal<T>(slug: string): Promise<T | undefined> {
   try {
@@ -26,5 +27,6 @@ export default async function fetchSiteGlobals(): Promise<SiteGlobals> {
   if (header) globals.header = header;
   if (footer) globals.footer = footer;
   if (siteSettings) globals.siteSettings = siteSettings;
-  return globals;
+  // Nav/footer reference links only need slug/title, not the whole target doc.
+  return slimProps(globals);
 }

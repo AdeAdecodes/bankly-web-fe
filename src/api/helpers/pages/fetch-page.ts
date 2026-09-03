@@ -1,6 +1,7 @@
 import api from '~/api';
 import { Page } from '~/types';
 import { querify } from '~/utils/querify';
+import slimProps from '../shared/slim-props';
 import populateBlocks from './populate-blocks';
 
 /** The CMS slug used for `/`. */
@@ -30,7 +31,7 @@ export default async function fetchPage(
 
     await populateBlocks(page.layout);
 
-    return page;
+    return slimProps(page);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(`[fetchPage] failed for slug "${slug}"`, error);

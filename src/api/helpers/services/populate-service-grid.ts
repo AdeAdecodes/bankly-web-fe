@@ -1,4 +1,5 @@
 import { ConsularService, PopulatedBlockDef } from '~/types';
+import { pickServiceCard } from '../shared/slim-props';
 import fetchConsularServices from './fetch-consular-services';
 
 /** Key used to look a group's services up in `populatedData.groups`. */
@@ -16,7 +17,7 @@ export default async function populateServiceGrid(
       if (group.populateBy !== 'category' || !group.category) return;
 
       const result = await fetchConsularServices({ category: group.category });
-      groups[serviceGroupKey(group, index)] = result.docs;
+      groups[serviceGroupKey(group, index)] = result.docs.map(pickServiceCard);
     })
   );
 

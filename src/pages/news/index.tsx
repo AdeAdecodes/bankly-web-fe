@@ -1,6 +1,7 @@
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import fetchSiteGlobals from '~/api/helpers/globals/fetch-site-globals';
 import fetchNewsArticles from '~/api/helpers/news/fetch-news-articles';
+import slimProps, { pickNewsCard } from '~/api/helpers/shared/slim-props';
 import NewsList from '~/components/impls/news/list';
 import CMSPageLayout from '~/components/layouts/cms-page-layout';
 import { NEWS_CATEGORY_LABELS } from '~/constants';
@@ -60,7 +61,13 @@ export async function getServerSideProps(
     'public, s-maxage=60, stale-while-revalidate=300'
   );
 
-  return { props: { result, category, globals } };
+  return {
+    props: {
+      result: slimProps({ ...result, docs: result.docs.map(pickNewsCard) }),
+      category,
+      globals,
+    },
+  };
 }
 
 export default NewsIndexRoute;

@@ -1,4 +1,5 @@
 import { PopulatedBlockDef } from '~/types';
+import { pickNewsCard } from '../shared/slim-props';
 import fetchNewsArticles from './fetch-news-articles';
 
 export default async function populateNewsGrid(
@@ -9,5 +10,5 @@ export default async function populateNewsGrid(
     category: block.category,
   });
 
-  block.populatedData = { articles: result.docs };
+  block.populatedData = { articles: result.docs.map(pickNewsCard) };
 }

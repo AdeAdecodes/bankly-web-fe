@@ -2,6 +2,7 @@ import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import fetchSiteGlobals from '~/api/helpers/globals/fetch-site-globals';
 import fetchNewsArticle from '~/api/helpers/news/fetch-news-article';
 import fetchNewsArticles from '~/api/helpers/news/fetch-news-articles';
+import slimProps, { pickNewsCard } from '~/api/helpers/shared/slim-props';
 import NewsArticlePage from '~/components/impls/news/article';
 import CMSPageLayout from '~/components/layouts/cms-page-layout';
 import defineComponent from '~/helpers/define-component';
@@ -63,7 +64,13 @@ export async function getServerSideProps(
     'public, s-maxage=60, stale-while-revalidate=300'
   );
 
-  return { props: { article, related, globals } };
+  return {
+    props: {
+      article: slimProps(article),
+      related: slimProps(related.map(pickNewsCard)),
+      globals,
+    },
+  };
 }
 
 export default NewsArticleRoute;
